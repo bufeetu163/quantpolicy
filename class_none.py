@@ -1,6 +1,6 @@
 # @Time : 2020/5/4 3:52 
 # @Author : bufeetu
-# @File : class_tool.py 
+# @File : class_none.py
 import time, datetime
 import os
 import requests

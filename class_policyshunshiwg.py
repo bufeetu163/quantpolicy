@@ -9,13 +9,18 @@ import pymysql
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from class_policymodel import Policymodel
+from class_model import Model
 #注释完毕
 
 
-class Policyshunshiqushi(Policymodel):
+class Policyshunshiwg(Model):
     def __init__(self):
         pass
+    def get_direction(self,price,ma):
+        if price>ma:
+            return 'duo'
+        else:
+            return 'kong'
     def get_zhangshu(self,isduo=True):
         zhangshu_duo = 0
         zhangshu_kong = 0
@@ -43,26 +48,26 @@ class Policyshunshiqushi(Policymodel):
         # 张数 间隔 止盈 止损
         fund=str(round(float(self.dict_acc['quanyi'])*float(self.dict_data['close']),2))
         money=str(self.dict_acc['money'])
-        fee=str(self.dict_jilu['fee_sum'])
-        rate_nianhua = str(self.get_nianhua(self.dict_jilu['list_rate_shouyi_fund'][-1], self.date_totimechuo('2018-09-15'), self.dict_param['timechuo_end']))
-        huiche_max=str(self.dict_jilu['huiche_max'])
-        res = self.get_shenglv_yingkui(self.dict_jilu['list_rate_shouyi_close'])
+        fee=str(self.dict_record['fee_sum'])
+        rate_nianhua = str(self.get_nianhua(self.dict_record['list_rate_shouyi_fund'][-1], self.date_totimechuo('2018-09-15'), self.dict_param['timechuo_end']))
+        huiche_max=str(self.dict_record['huiche_max'])
+        res = self.get_shenglv_yingkui(self.dict_record['list_rate_shouyi_close'])
         rate_shenglv=str(res[0])
         rate_yingkui = str(res[1])
-        rate_chicang=str(max(self.dict_jilu['list_rate_chicang']))
-        rate_margin_min=str(min(self.dict_jilu['list_rate_margin']))
-        res=self.get_num_lianxuyingkui(self.dict_jilu['list_rate_shouyi_close'])
+        rate_chicang=str(max(self.dict_record['list_rate_chicang']))
+        rate_margin_min=str(min(self.dict_record['list_rate_margin']))
+        res=self.get_num_lianxuyingkui(self.dict_record['list_rate_shouyi_close'])
         num_lianxuying=str(res[0])
         num_lianxukui=str(res[1])
-        num_shouyi=str(len(self.dict_jilu['list_rate_shouyi_close']))
-        aver_shouyi=str(sum(self.dict_jilu['list_rate_shouyi_close'])/len(self.dict_jilu['list_rate_shouyi_close']))
+        num_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
+        aver_shouyi=str(sum(self.dict_record['list_rate_shouyi_close'])/len(self.dict_record['list_rate_shouyi_close']))
         m1=self.coinname+'|'+fund+'|'+money+'|'+fee+'|'+rate_nianhua+'|'+huiche_max+'|'+rate_shenglv+'|'+rate_yingkui
         m2='|'+rate_chicang+'|'+rate_margin_min+'|'+num_lianxuying+'|'+num_lianxukui+'|'+num_shouyi+'|'+aver_shouyi
         m3='|' + str(self.dict_param['jiange']) + '|' + str(self.dict_param['zhangshu_shun'])+ '|' + str(self.dict_param['zhangshu_ni']) + '|' + str(self.dict_param['zhiying']) + '|' + str(self.dict_param['zhisun'])+ '|' + str(self.dict_param['sleep_day'])
         m3= '|' + str(self.dict_param['zhangshu_shun'])+ '|' + str(self.dict_param['zhiying']) + '|' + str(self.dict_param['zhisun'])+ '|' + str(self.dict_param['sleep_day'])
         self.log_paramlist(m1+m2+m3)
-        self.log_paramlist(self.dict_jilu['list_rate_shouyi_close'])
-        self.chart_2(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max), self.dict_jilu['list_rate_jizhun'], self.dict_jilu['list_rate_shouyi_fund'])
+        self.log_paramlist(self.dict_record['list_rate_shouyi_close'])
+        self.chart_2(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
 
         # m1 = self.coinname + '资产' + fund + '利润' + money + '手续费' + fee + '年化' + rate_nianhua + '回撤' + huiche_max + '胜率' + rate_shenglv + '盈亏' + rate_yingkui
         # m2 = '持仓率' + rate_chicang + '最低保证金' + rate_margin_min + '连续盈利' + num_lianxuying + '连续亏损' + num_lianxukui + '收益次数' + num_shouyi + '平均收益' + aver_shouyi
@@ -79,20 +84,11 @@ class Policyshunshiqushi(Policymodel):
         zhangshu_duo = self.get_zhangshu(True)
         zhangshu_kong = self.get_zhangshu(False)
         price = self.dict_data['close']
-        m = '价格' + str(price) + '回撤' + str(self.dict_jilu['huiche_max']) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(self.dict_acc['lun_rate_shouyi'])
+        m = '价格' + str(price) + '回撤' + str(self.dict_record['huiche_max']) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(self.dict_acc['lun_rate_shouyi'])
         test.to_csv(os.getcwd() + '/' + datem + m + title + '.csv', encoding='gbk')
+
     def log(self,content):
-        return
-        content = str(content)+'                  price='+str(self.dict_data['open'])+'    '+str(self.dict_data['date'])  + '\n'
-        print(content)
-        url=os.getcwd() + '/log'+self.coinname+'.txt'
-        f = open(url, mode='a+')
-        f.write(str(content))
-        f.close()
-    def log_del(self):
-        url = os.getcwd() + '/log' + self.coinname + '.txt'
-        if (os.path.exists(url)):
-            os.remove(url)
+        self.txt_write(self.coinname,content)
     def close(self,price,mianzhi):
         #获取数据
         zhiying = self.dict_param['zhiying']
@@ -114,11 +110,11 @@ class Policyshunshiqushi(Policymodel):
             if todo == '止损空' or todo == '止损多':
                 self.dict_acc['timechuo_sleep'] = int(self.dict_data['timechuo']) + 86400 * self.dict_param['sleep_day']
             self.log('整体'+todo+',收益率' + str(lun_rate_shouyi)+'初始价格'+str(self.dict_acc['lun_price_start'])+'初始资产'+str(self.dict_acc['lun_fund_start']))
-            self.dict_jilu['fee_sum'] += 2 * fee_close
+            self.dict_record['fee_sum'] += 2 * fee_close
             self.wg_tocsv(self.coinname+todo + str(lun_rate_shouyi))
             self.list_wg.clear()
             if abs(lun_rate_shouyi)>1:
-                self.dict_jilu['list_rate_shouyi_close'].append(lun_rate_shouyi)
+                self.dict_record['list_rate_shouyi_close'].append(lun_rate_shouyi)
             self.log('扣手续费之前权益'+str(self.dict_acc['quanyi']))
             self.dict_acc['quanyi']-=2*fee_close
             self.log('扣手续费之后权益'+str(self.dict_acc['quanyi']))
@@ -133,35 +129,35 @@ class Policyshunshiqushi(Policymodel):
     def uprecord(self,price,mianzhi):
         #更新本轮收益率 本轮最大收益率 本轮最高最低价 记录
         fund = round(price * self.dict_acc['quanyi'],4)
-        self.dict_jilu['fund_max'] = max(self.dict_jilu['fund_max'], fund)
-        self.dict_jilu['fund_min'] = min(self.dict_jilu['fund_min'], fund)
+        self.dict_record['fund_max'] = max(self.dict_record['fund_max'], fund)
+        self.dict_record['fund_min'] = min(self.dict_record['fund_min'], fund)
         lun_rate_shouyi = round(fund / self.dict_acc['lun_fund_start'] * 100 - 100, 2)
         self.dict_acc['lun_rate_shouyi'] = lun_rate_shouyi
         if lun_rate_shouyi > self.dict_acc['lun_rate_shouyi_max']:
             self.dict_acc['lun_rate_shouyi_max'] = lun_rate_shouyi
             self.log('恭喜,本轮收益率达到' + str(lun_rate_shouyi))
         rate_chicang = round(self.dict_acc['lun_zhangshu_sum'] / (fund / mianzhi), 2)
-        self.dict_jilu['rate_chicang_max'] = max(self.dict_jilu['rate_chicang_max'], rate_chicang)
+        self.dict_record['rate_chicang_max'] = max(self.dict_record['rate_chicang_max'], rate_chicang)
         self.dict_acc['lun_price_high'] = max(self.dict_acc['lun_price_high'],price)
         self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'],price)
-        if self.dict_data['timechuo']>self.dict_jilu['timechuo_record']:
-            self.dict_jilu['huiche_max'] = max(self.dict_jilu['huiche_max'],round((10000-fund) / (10000) * 100,2))
-            self.dict_jilu['timechuo_record']=int(self.dict_data['timechuo'])+3600*4
+        if self.dict_data['timechuo']>self.dict_record['timechuo_record']:
+            self.dict_record['huiche_max'] = max(self.dict_record['huiche_max'],round((10000-fund) / (10000) * 100,2))
+            self.dict_record['timechuo_record']=int(self.dict_data['timechuo'])+3600*4
             #资金收益率 币数收益率 基准率 手续费
             money=self.dict_acc['money']
-            rate_shouyi_fund = round((fund+money) / self.dict_jilu['fund_start'] * 100 - 100, 2)
-            rate_shouyi_coin = round((fund+money)/price / self.dict_jilu['quanyi_start'] * 100 - 100, 2)
-            rate_jizhun = round(price / float(self.dict_jilu['price_start']) * 100 - 100, 2)
+            rate_shouyi_fund = round((fund+money) / self.dict_record['fund_start'] * 100 - 100, 2)
+            rate_shouyi_coin = round((fund+money)/price / self.dict_record['quanyi_start'] * 100 - 100, 2)
+            rate_jizhun = round(price / float(self.dict_record['price_start']) * 100 - 100, 2)
             rate_margin = self.get_rate_margin(price,self.dict_acc['lun_zhangshu_sum'], self.dict_acc['quanyi'], mianzhi)
-            self.dict_jilu['list_rate_shouyi_fund'].append(rate_shouyi_fund)
-            self.dict_jilu['list_rate_shouyi_coin'].append(rate_shouyi_coin)
-            self.dict_jilu['list_rate_jizhun'].append(rate_jizhun)
-            self.dict_jilu['list_rate_chicang'].append(rate_chicang)
-            self.dict_jilu['list_rate_margin'].append(rate_margin)
+            self.dict_record['list_rate_shouyi_fund'].append(rate_shouyi_fund)
+            self.dict_record['list_rate_shouyi_coin'].append(rate_shouyi_coin)
+            self.dict_record['list_rate_jizhun'].append(rate_jizhun)
+            self.dict_record['list_rate_chicang'].append(rate_chicang)
+            self.dict_record['list_rate_margin'].append(rate_margin)
             m1='本轮'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+'本轮收益率'+str(lun_rate_shouyi)+'本轮最大收益率'+str(self.dict_acc['lun_rate_shouyi_max'])
-            m2 = '权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '净利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_jilu['fee_sum']) + '收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
-            m3 = '最大回撤' + str(self.dict_jilu['huiche_max']) + '最大持仓率' + str(max(self.dict_jilu['list_rate_chicang'])) + '最低保证金率' + str(min(self.dict_jilu['list_rate_margin']))
-            m4 = '交易最低资金' + str(self.dict_jilu['fund_min']) + '最高资金' + str(self.dict_jilu['fund_max'])
+            m2 = '权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '净利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_record['fee_sum']) + '收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
+            m3 = '最大回撤' + str(self.dict_record['huiche_max']) + '最大持仓率' + str(max(self.dict_record['list_rate_chicang'])) + '最低保证金率' + str(min(self.dict_record['list_rate_margin']))
+            m4 = '交易最低资金' + str(self.dict_record['fund_min']) + '最高资金' + str(self.dict_record['fund_max'])
             self.log(m1)
             self.log(m2)
             self.log(m3)
@@ -215,17 +211,17 @@ class Policyshunshiqushi(Policymodel):
                 self.list_wg[i]['status'] = 'kong_ing'
                 # self.log('委托开空,委托价'+str(wg['price_wg'])+'委托张数'+str(wg['zhangshu_wg']))
         return
-    def creat(self,price,atr,mianzhi):
+    def creat(self,price,atr,ma,mianzhi,fund):
         self.list_wg = []
-        fund=round(self.dict_acc['quanyi']*price,4)
         zhangshu_chong=int(fund/mianzhi)
-        zhangshu_shun = max(round(self.dict_param['zhangshu_shun']*zhangshu_chong,2),1)
-        zhangshu_ni = max(round(self.dict_param['zhangshu_ni']*zhangshu_chong,2),1)
+        zhangshu_ni = max(round(self.dict_param['zhangshu']*zhangshu_chong,2),1)
+        zhangshu_ni=int(zhangshu_ni)
+        zhangshu_shun=zhangshu_ni*2
         jiange_wg = atr * self.dict_param['jiange']
-        direction=self.dict_data['direction']
+        direction=self.get_direction(price,ma)
         status = ''
         zhangshu_wg=0
-        geshu = self.dict_param['geshu']
+        geshu = 20
         for i in range(geshu * 2 + 1):
             id = i + 1
             price_wg = price + (geshu - i) * jiange_wg
@@ -249,7 +245,6 @@ class Policyshunshiqushi(Policymodel):
                 'shouyi': 0,
                 'rate_shouyi': 0,
                 'rate_shouyi_max': 0,
-                'timechuo': self.dict_data['timechuo'],
                 'date': self.dict_data['date'],
             }
             #加入列表
@@ -262,28 +257,32 @@ class Policyshunshiqushi(Policymodel):
         self.dict_acc['lun_price_start'] = price
         self.dict_acc['lun_quanyi_start'] = self.dict_acc['quanyi']
         self.dict_acc['lun_fund_start'] = self.dict_acc['quanyi'] * price
-        self.dict_acc['lun_rate_shouyi'] = 0
-        self.dict_acc['lun_rate_shouyi_max'] = 0
-        self.dict_acc['lun_zhangshu_sum'] =0
         self.dict_acc['lun_price_high']=price
         self.dict_acc['lun_price_low']=price
+        self.dict_acc['lun_rate_shouyi'] = 0
+        self.dict_acc['lun_rate_shouyi_max'] = 0
+        self.dict_acc['lun_zhangshu_sum'] = zhangshu_chong
         self.log('账户='+str(self.dict_acc))
         self.log('创建网格完成,总格数'+str(len(self.list_wg))+'间隔'+str(jiange_wg)+'方向'+str(direction)+'初始资产'+str(fund))
+        self.log('创建网格完成,总格数'+str(len(self.list_wg))+'间隔'+str(jiange_wg)+'方向'+str(direction)+'初始资产'+str(fund))
     def buy(self,price):
-        quanyi = round(self.dict_jilu['fund_start'] / price, 8)
+        quanyi = round(self.dict_acc['money'] / price, 8)
         self.dict_acc['quanyi'] = quanyi
-        self.dict_jilu['price_start'] = price
-        self.dict_jilu['quanyi_start'] = quanyi
-        self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_jilu['price_start'])+'初始权益'+str(self.dict_jilu['quanyi_start']))
-    def run(self,open,high,low,close,atr):
+        self.dict_acc['money'] = 0
+        self.dict_record['price_start'] = price
+        self.dict_record['quanyi_start'] = quanyi
+        self.dict_record['fund_start'] =price*quanyi
+        self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_record['price_start'])+'初始权益'+str(self.dict_record['quanyi_start']))
+        self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_record['price_start'])+'初始权益'+str(self.dict_record['quanyi_start']))
+    def run(self,open,high,low,close,atr,ma):
         if self.dict_acc['quanyi'] == 0:
             self.buy(close)
             return
         else:
             mianzhi = self.dict_param['mianzhi']
             if self.list_wg==[]:
-                self.creat(close,atr, mianzhi)
-                self.log('创建网格成功')
+                self.creat(close,atr,ma,mianzhi,self.dict_acc['quanyi']*close)
+                self.txt_remove('创建网格成功')
             else:
                 if len(self.list_wg)>1:
                     self.ing(high,low,mianzhi,close)
@@ -291,44 +290,31 @@ class Policyshunshiqushi(Policymodel):
                 self.ok(close,mianzhi)
                 self.uprecord(close,mianzhi)
                 self.close(close,mianzhi)
-    def start(self,coinname,jici,param={}):
+    def start(self,coinname,date_start,date_end,param={}):
         self.coinname=str(coinname).lower()
-        # 整理参数
+        # 1参数容器
         self.dict_param=param
         self.dict_param['jingdu']=self.get_jingdu(coinname)
         self.dict_param['mianzhi']=self.get_mianzhi(coinname)
-        # 创建记录容器
-        self.dict_jilu = {
+        # 2记录容器
+        self.dict_record = {
+            'timechuo_record': 0,
             'price_start': 0,
             'quanyi_start': 0,
-            'fund_start': 10000,
-            'timechuo_record': 0,
+            'fund_start': 0,
             'fee_sum': 0,
-            'rate_chicang_max': 0,
-            'huiche_max': 0,
-            'fund_max': 10000,
-            'fund_min': 10000,
-            'list_rate_shouyi_close': [],
             'list_rate_shouyi_fund': [],
             'list_rate_shouyi_coin': [],
             'list_rate_jizhun': [],
+            'list_rate_shouyi_lun': [],
             'list_rate_chicang': [0],
             'list_rate_margin': [],
-            'list_ma': [],
+            'list_rate_huiche': [],
         }
-        self.dict_data = {
-            'date': 0,
-            'timechuo': 0,
-            'open': 0,
-            'high': 0,
-            'low': 0,
-            'close': 0,
-            'ma': 0,
-            'atr': 0,
-            'direction':'sleep'
-        }
+        #3.账户容器
         self.dict_acc = {
             'quanyi': 0,
+            'money': 10000,
             'lun_direction':'',
             'lun_price_start': 0,
             'lun_quanyi_start': 0,
@@ -338,48 +324,58 @@ class Policyshunshiqushi(Policymodel):
             'lun_rate_shouyi': 0,
             'lun_rate_shouyi_max': 0,
             'lun_zhangshu_sum': 0,
-            'money': 0,
-            'timechuo_sleep':0,
+        }
+        # 4.数据容器
+        self.dict_data = {
+            'date': 0,
+            'timechuo': 0,
+            'open': 0,
+            'high': 0,
+            'low': 0,
+            'close': 0,
+            'ma': 0,
+            'atr': 0,
         }
         self.list_wg = []
-        self.log_del()
+        self.txt_remove(self.coinname)
         # 遍历数据
-        df = pd.read_csv('../kline/1m_' + coinname + 'usdt.csv')
-        print('./kline/1m_' + coinname + 'usdt.csv')
-        for idx, row in df.iterrows():
-            #记录ma列表
-            if len(self.dict_jilu['list_ma'])==0:
-                self.dict_jilu['list_ma'].append(float(row['ma91']))
-            if self.dict_jilu['list_ma'][-1]!=float(row['ma91']):
-                self.dict_jilu['list_ma'].append(float(row['ma91']))
+        # 读取历史数据
+        df_1m = pd.read_csv(os.path.abspath('.') + '\\klineok\\' + coinname + '1m1dok.csv', index_col=0)
+        df_1m = df_1m.reset_index()
+        for i in range(len(df_1m)):
+            date= df_1m.loc[i, 'date']
+            timechuo= int(df_1m.loc[i, 'timechuo'])
+            open= float(df_1m.loc[i, 'open'])
+            high= float(df_1m.loc[i, 'high'])
+            low= float(df_1m.loc[i, 'low'])
+            close= float(df_1m.loc[i, 'close'])
+            ddate= df_1m.loc[i, 'ddate']
+            dvol= float(df_1m.loc[i, 'dvol'])
+            ma91= float(df_1m.loc[i, 'ma91'])
+            dc20up= float(df_1m.loc[i, 'dc20up'])
+            dc20dn= float(df_1m.loc[i, 'dc20dn'])
+            dc10up= float(df_1m.loc[i, 'dc10up'])
+            dc10dn= float(df_1m.loc[i, 'dc10dn'])
+            atr= float(df_1m.loc[i, 'atr'])
             self.dict_data = {
-                'date': str(row['date']),
-                'timechuo': int(row['timechuo']),
-                'open': float(row['open']),
-                'high': float(row['high']),
-                'low': float(row['low']),
-                'close': float(row['close']),
-                'ma': float(row['ma91']),
-                'atr': float(row['atr']),
-                'direction':self.get_direction_qushi(float(row['close']),float(row['ma91']),self.dict_jilu['list_ma'])
+                'date': date,
+                'timechuo': timechuo,
+                'open': open,
+                'high': high,
+                'low': low,
+                'close': close,
+                'ddate': ddate,
+                'dvol': dvol,
+                'ma91': ma91,
+                'dc20up': dc20up,
+                'dc20dn': dc20dn,
+                'dc10up': dc10up,
+                'dc10dn': dc10dn,
+                'atr': atr,
             }
-            if int(row['timechuo'])<self.dict_acc['timechuo_sleep']:
-                self.dict_data['direction']='sleep'
-            if int(row['timechuo']) > self.date_totimechuo('2019-01-01') and self.dict_jilu['list_rate_shouyi_fund'][-1]<5:
-                self.log_paramlist(str(jici)+'失败!收益'+str(self.dict_jilu['list_rate_shouyi_fund'][-1])+'过低'+str(self.dict_param))
-                return
-            if self.dict_jilu['huiche_max']>35:
-                self.log_paramlist(str(jici)+'失败!回撤'+str(self.dict_jilu['huiche_max'])+'过大' + str(self.dict_param))
-                return
-            if max(self.dict_jilu['list_rate_chicang'])>4.5:
-                self.log_paramlist(str(jici)+'失败!持仓率'+str(max(self.dict_jilu['list_rate_chicang']))+'过大' + str(self.dict_param))
-                return
-            if int(row['timechuo']) > self.dict_param['timechuo_end']:
-                print(str(jici)+'到达结束时间'+str(self.get_date_now()))
-                self.zongjie()
-                return
-            else:
-                self.run(float(row['open']),float(row['high']),float(row['low']),float(row['close']),float(row['atr']))
+            if self.dict_data['timechuo'] > self.date_totimechuo(date_start) and self.dict_data[
+                'timechuo'] < self.date_totimechuo(date_end):
+                self.run(open,high,low,close,atr,ma91)
 
 
 

@@ -10,9 +10,7 @@ import numpy as np
 class Base():
 
     #基础通用方法
-    def file_remove(self,filename):
-        if os.path.exists(filename):
-            os.remove(filename)
+
     def timechuo_getzerotimechuo(self, timechuo):
         zero_timechuo = int(timechuo - (timechuo % 86400))+3600*16
         return zero_timechuo
@@ -23,10 +21,16 @@ class Base():
         timeArray = time.strptime(data, "%Y-%m-%d %H:%M")
         timeStamp = int(time.mktime(timeArray))
         return timeStamp
+    def get_date_now(self):
+        res=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return res
     def txt_write(self,filename,content):
         with open(filename+".txt", "a+") as f:
             f.write(content+'\n')
             print(content)
+    def txt_remove(self,filename):
+        if os.path.exists(filename):
+            os.remove(filename)
     #基础网络请求
     def get_url(self, url):
         add_to_headers = None

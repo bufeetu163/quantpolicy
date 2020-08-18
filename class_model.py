@@ -10,22 +10,9 @@ import time, datetime
 import matplotlib.pyplot as plt
 import os
 import json
+from class_base import Base
 #注释完毕
-class Policymodel():
-
-    def timechuo_todate(self, timechuo):
-        date = time.strftime("%Y-%m-%d_%H-%M", time.localtime(int(timechuo)))
-        return date
-    def date_totimechuo(self, date='2018-09-15'):
-        timeStamp = int(time.mktime(time.strptime(date, "%Y-%m-%d")))
-        return timeStamp
-    def get_date_now(self):
-        res=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return res
-
-    def get_timechuo_lingdian(self):
-        zeroPoint = int(time.time()) - int(time.time() - time.timezone) % 86400
-        return zeroPoint
+class Model(Base):
     def get_jingdu(self,coinname):
         coinname=str(coinname).lower()
         if coinname=='btc':
@@ -58,39 +45,7 @@ class Policymodel():
             return 0
         fee = round(int(zhangshu) * mianzhi / price * 0.03 * 0.01, 8)  # 开仓手续费
         return fee
-    def get_direction_maup(self, maup, madn, price, ma):
-        rate_ma = (price - ma) / ma * 100
-        if rate_ma<madn:
-            return 'sleep'
-        elif rate_ma<0:
-            return 'kong'
-        elif rate_ma<maup:
-            return 'duo'
-        else:
-            return 'sleep'
-    def get_direction_hekuan(self,price, ma):
-        rate_ma = (price - ma) / ma * 100
-        if rate_ma<0:
-            return 'kong'
-        else:
-            return 'duo'
-    def get_direction_qushi(self,price, ma,list_ma=[]):
-        rate_ma = (price - ma) / ma * 100
-        if rate_ma<0:
-            res= 'kong'
-        else:
-            res= 'duo'
-        if len(list_ma)<10:
-            return 'sleep'
-        else:
-            if res=='duo' and list_ma[-1]<list_ma[-9]:
-                self.log('本来是多,改成休眠')
 
-                res='sleep'
-            if res=='kong' and list_ma[-1]>list_ma[-9]:
-                self.log('本来是空,改成休眠')
-                res='sleep'
-        return res
     def wg_show(self, list_wg=[]):
         if len(list_wg) == 0:
             self.log('网格为空')
@@ -100,7 +55,7 @@ class Policymodel():
             # self.log(m)
             if list_wg[i]['status'] != 'duo_wait' and list_wg[i]['status'] != 'kong_wait':
                 self.log(m)
-    def chart_1(self, title, list1=[]):
+    def chart(self, title, list1=[], list2=[], list3=[], list4=[]):
         # 横坐标
         listx = []
         for i in range(len(list1)):
@@ -108,51 +63,15 @@ class Policymodel():
         plt.rcParams['font.sans-serif'] = ['SimHei']
         liney1 = plt.plot(listx, list1)
         plt.setp(liney1, color='r')
-        plt.title(title)
-        plt.savefig(os.getcwd() + '/' + title + '.png')
-        plt.close()
-    def chart_2(self, title, list1=[], list2=[]):
-        # 横坐标
-        listx = []
-        for i in range(len(list1)):
-            listx.append(i + 1)
-        plt.rcParams['font.sans-serif'] = ['SimHei']
-        liney1 = plt.plot(listx, list1)
-        plt.setp(liney1, color='r')
-        liney2 = plt.plot(listx, list2)
-        plt.setp(liney2, color='g')
-        plt.title(title)
-        plt.savefig(os.getcwd() + '/' + title + '.png')
-        plt.close()
-    def chart_3(self, title, list1=[], list2=[], list3=[]):
-        # 横坐标
-        listx = []
-        for i in range(len(list1)):
-            listx.append(i + 1)
-        plt.rcParams['font.sans-serif'] = ['SimHei']
-        liney1 = plt.plot(listx, list1)
-        plt.setp(liney1, color='r')
-        liney2 = plt.plot(listx, list2)
-        plt.setp(liney2, color='g')
-        liney3 = plt.plot(listx, list3)
-        plt.setp(liney3, color='#8B008B')
-        plt.title(title)
-        plt.savefig(os.getcwd() + '/' + title + '.png')
-        plt.close()
-    def chart_4(self, title, list1=[], list2=[], list3=[], list4=[]):
-        # 横坐标
-        listx = []
-        for i in range(len(list1)):
-            listx.append(i + 1)
-        plt.rcParams['font.sans-serif'] = ['SimHei']
-        liney1 = plt.plot(listx, list1)
-        plt.setp(liney1, color='r')
-        liney2 = plt.plot(listx, list2)  # 多头绿色
-        plt.setp(liney2, color='g')#绿色
-        liney3 = plt.plot(listx, list3)
-        plt.setp(liney3, color='#FFD700')  # 空头黄
-        liney4 = plt.plot(listx, list4)
-        plt.setp(liney4, color='#B8860B')  # 休眠棕色
+        if len(list2)>0:
+            liney2 = plt.plot(listx, list2)  # 多头绿色
+            plt.setp(liney2, color='g')  # 绿色
+            if len(list3) > 0:
+                liney3 = plt.plot(listx, list3)
+                plt.setp(liney3, color='#FFD700')  # 空头黄
+                if len(list4)>0:
+                    liney4 = plt.plot(listx, list4)
+                    plt.setp(liney4, color='#B8860B')  # 休眠棕色
         plt.title(title)
         plt.savefig(os.getcwd() + '/' + title + '.png')
         plt.close()
