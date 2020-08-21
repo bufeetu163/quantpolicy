@@ -31,6 +31,8 @@ class Base():
     def txt_remove(self,filename):
         if os.path.exists(filename):
             os.remove(filename)
+
+
     #基础网络请求
     def get_url(self, url):
         add_to_headers = None

@@ -16,8 +16,12 @@ import pdb
 def main():
     robot=Policyshunshiwg()
     param={
-        'zhangshu':0.1,
-        'jiange':0.1,
+        'zhangshu_ni':0.05,
+        'jiange':0.2,
+        'zhiying':9,
+        'huiche':30,
+        'zhisun':-5,
+        'zhisun_atr':2,
 
     }
     robot.start('eth',"2018-06-18 23:40","2019-11-18 23:59",param)

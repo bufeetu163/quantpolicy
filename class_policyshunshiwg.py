@@ -50,7 +50,7 @@ class Policyshunshiwg(Model):
         money=str(self.dict_acc['money'])
         fee=str(self.dict_record['fee_sum'])
         rate_nianhua = str(self.get_nianhua(self.dict_record['list_rate_shouyi_fund'][-1], self.date_totimechuo('2018-09-15'), self.dict_param['timechuo_end']))
-        huiche_max=str(self.dict_record['huiche_max'])
+        huiche_max=str(max(self.dict_record['list_rate_huiche']))
         res = self.get_shenglv_yingkui(self.dict_record['list_rate_shouyi_close'])
         rate_shenglv=str(res[0])
         rate_yingkui = str(res[1])
@@ -67,101 +67,80 @@ class Policyshunshiwg(Model):
         m3= '|' + str(self.dict_param['zhangshu_shun'])+ '|' + str(self.dict_param['zhiying']) + '|' + str(self.dict_param['zhisun'])+ '|' + str(self.dict_param['sleep_day'])
         self.log_paramlist(m1+m2+m3)
         self.log_paramlist(self.dict_record['list_rate_shouyi_close'])
-        self.chart_2(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
+        self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(max(self.dict_record['list_rate_huiche'])), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
 
-        # m1 = self.coinname + '资产' + fund + '利润' + money + '手续费' + fee + '年化' + rate_nianhua + '回撤' + huiche_max + '胜率' + rate_shenglv + '盈亏' + rate_yingkui
-        # m2 = '持仓率' + rate_chicang + '最低保证金' + rate_margin_min + '连续盈利' + num_lianxuying + '连续亏损' + num_lianxukui + '收益次数' + num_shouyi + '平均收益' + aver_shouyi
-        # m3 = '间隔' + str(self.dict_param['jiange']) + '顺势' + str(self.dict_param['zhangshu_shun']) + '逆势' + str(self.dict_param['zhangshu_ni'])  + '止盈' + str(self.dict_param['zhiying']) + '止损' + str(self.dict_param['zhisun'])+ '休眠' + str(self.dict_param['sleep_day'])
-        # self.log_paramlist(m1)
-        # self.log_paramlist(m2)
-        # self.log_paramlist(m3)
-    def wg_tocsv(self,title):
-        return
+
+    def wg_tocsv(self,title,timechuo,price):
         name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','timechuo','date']
         test = pd.DataFrame(columns=name, data=self.list_wg)  # 数据有三列，列名分别为one,two,three
-        print(test)
-        datem = self.timechuo_todate(self.dict_data['timechuo'])
+        datem = self.timechuo_todate(timechuo)
         zhangshu_duo = self.get_zhangshu(True)
         zhangshu_kong = self.get_zhangshu(False)
-        price = self.dict_data['close']
-        m = '价格' + str(price) + '回撤' + str(self.dict_record['huiche_max']) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(self.dict_acc['lun_rate_shouyi'])
+        m = '价格' + str(price) + '回撤' + str(max(self.dict_record['list_rate_huiche'])) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(self.dict_acc['lun_rate_shouyi'])
         test.to_csv(os.getcwd() + '/' + datem + m + title + '.csv', encoding='gbk')
 
     def log(self,content):
-        self.txt_write(self.coinname,content)
-    def close(self,price,mianzhi):
-        #获取数据
-        zhiying = self.dict_param['zhiying']
-        huiche = self.dict_param['huiche']
-        lun_direction=self.dict_acc['lun_direction']
-        lun_rate_shouyi = self.dict_acc['lun_rate_shouyi']
-        lun_rate_shouyi_max = self.dict_acc['lun_rate_shouyi_max']
-        fee_close=self.get_fee(price,self.dict_acc['lun_zhangshu_sum'], mianzhi)
+        self.txt_write(self.coinname,self.dict_data['date']+'----'+str(self.dict_data['close'])+'----'+content)
+    def sell(self,quanyi,price,fund_start):
+        coin= quanyi - (fund_start / price)
+        money = coin* price * 0.998
+        res={
+            'coin':coin,
+            'money':money,
+        }
+        return res
+    def close(self,price,mianzhi,zhiying,huiche,zhisun,zhisun_atr,lun_direction,lun_rate_shouyi,lun_rate_shouyi_max,lun_zhangshu_sum,timechuo):
         todo=''
         if lun_rate_shouyi_max>zhiying and lun_rate_shouyi<=lun_rate_shouyi_max*(1-huiche*0.01):
             todo = '止盈'
-        if lun_direction=='kong' and lun_rate_shouyi<0-abs(self.dict_param['zhisun']):
-            todo = '止损空'
-        if lun_direction=='duo' and  lun_rate_shouyi<0-abs(self.dict_param['zhisun']):
-            todo = '止损多'
-        if lun_direction=='sleep' and self.dict_data['direction']!='sleep':
-            todo = '解冻'
+        if lun_rate_shouyi<0-abs(zhisun):
+            if lun_direction == 'kong':
+                todo = '止损空'
+            elif lun_direction=='duo':
+                todo = '止损多'
+            else:
+                todo = '止损其他'
+                exit()
         if todo == '止盈' or todo == '止损空' or todo == '止损多' or todo == '解冻':
-            if todo == '止损空' or todo == '止损多':
-                self.dict_acc['timechuo_sleep'] = int(self.dict_data['timechuo']) + 86400 * self.dict_param['sleep_day']
-            self.log('整体'+todo+',收益率' + str(lun_rate_shouyi)+'初始价格'+str(self.dict_acc['lun_price_start'])+'初始资产'+str(self.dict_acc['lun_fund_start']))
-            self.dict_record['fee_sum'] += 2 * fee_close
-            self.wg_tocsv(self.coinname+todo + str(lun_rate_shouyi))
+            #快照网格
+            self.wg_tocsv(self.coinname+todo,timechuo,price)
+            #清空网格
             self.list_wg.clear()
+            #记录平仓收益率
             if abs(lun_rate_shouyi)>1:
                 self.dict_record['list_rate_shouyi_close'].append(lun_rate_shouyi)
-            self.log('扣手续费之前权益'+str(self.dict_acc['quanyi']))
-            self.dict_acc['quanyi']-=2*fee_close
-            self.log('扣手续费之后权益'+str(self.dict_acc['quanyi']))
-            # 开始卖币换钱
-            if self.dict_acc['quanyi'] * price > 10000:
-                num_sell = self.dict_acc['quanyi'] - (10000 / price)
-                self.dict_acc['quanyi'] = round(10000 / price, 8)
-                num_money = num_sell * price * 0.998
-                self.dict_acc['money'] += num_money
-                self.log('卖币成功,卖出数量' + str(num_sell) + '得到钱' + str(num_money) + '当前净利润' + str(self.dict_acc['money']))
-        return
-    def uprecord(self,price,mianzhi):
-        #更新本轮收益率 本轮最大收益率 本轮最高最低价 记录
-        fund = round(price * self.dict_acc['quanyi'],4)
-        self.dict_record['fund_max'] = max(self.dict_record['fund_max'], fund)
-        self.dict_record['fund_min'] = min(self.dict_record['fund_min'], fund)
-        lun_rate_shouyi = round(fund / self.dict_acc['lun_fund_start'] * 100 - 100, 2)
-        self.dict_acc['lun_rate_shouyi'] = lun_rate_shouyi
-        if lun_rate_shouyi > self.dict_acc['lun_rate_shouyi_max']:
-            self.dict_acc['lun_rate_shouyi_max'] = lun_rate_shouyi
-            self.log('恭喜,本轮收益率达到' + str(lun_rate_shouyi))
-        rate_chicang = round(self.dict_acc['lun_zhangshu_sum'] / (fund / mianzhi), 2)
-        self.dict_record['rate_chicang_max'] = max(self.dict_record['rate_chicang_max'], rate_chicang)
-        self.dict_acc['lun_price_high'] = max(self.dict_acc['lun_price_high'],price)
-        self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'],price)
-        if self.dict_data['timechuo']>self.dict_record['timechuo_record']:
-            self.dict_record['huiche_max'] = max(self.dict_record['huiche_max'],round((10000-fund) / (10000) * 100,2))
-            self.dict_record['timechuo_record']=int(self.dict_data['timechuo'])+3600*4
-            #资金收益率 币数收益率 基准率 手续费
-            money=self.dict_acc['money']
-            rate_shouyi_fund = round((fund+money) / self.dict_record['fund_start'] * 100 - 100, 2)
-            rate_shouyi_coin = round((fund+money)/price / self.dict_record['quanyi_start'] * 100 - 100, 2)
-            rate_jizhun = round(price / float(self.dict_record['price_start']) * 100 - 100, 2)
-            rate_margin = self.get_rate_margin(price,self.dict_acc['lun_zhangshu_sum'], self.dict_acc['quanyi'], mianzhi)
-            self.dict_record['list_rate_shouyi_fund'].append(rate_shouyi_fund)
-            self.dict_record['list_rate_shouyi_coin'].append(rate_shouyi_coin)
-            self.dict_record['list_rate_jizhun'].append(rate_jizhun)
-            self.dict_record['list_rate_chicang'].append(rate_chicang)
-            self.dict_record['list_rate_margin'].append(rate_margin)
-            m1='本轮'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+'本轮收益率'+str(lun_rate_shouyi)+'本轮最大收益率'+str(self.dict_acc['lun_rate_shouyi_max'])
-            m2 = '权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '净利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_record['fee_sum']) + '收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
-            m3 = '最大回撤' + str(self.dict_record['huiche_max']) + '最大持仓率' + str(max(self.dict_record['list_rate_chicang'])) + '最低保证金率' + str(min(self.dict_record['list_rate_margin']))
-            m4 = '交易最低资金' + str(self.dict_record['fund_min']) + '最高资金' + str(self.dict_record['fund_max'])
-            self.log(m1)
-            self.log(m2)
-            self.log(m3)
-            self.log(m4)
+            #计算手续费
+            fee_close = self.get_fee(price, lun_zhangshu_sum, mianzhi)
+            self.log('整体' + todo + ',收益率' + str(lun_rate_shouyi) + '手续费' + str(fee_close))
+            return fee_close
+        else:
+            return False
+    def uprecord(self,price,mianzhi,quanyi,money,fund_start,quanyi_start,price_start,lun_zhangshu_sum):
+        fund=price*quanyi
+        #资金收益率
+        rate_shouyi_fund = round((fund+money) / fund_start * 100 - 100, 2)
+        self.dict_record['list_rate_shouyi_fund'].append(rate_shouyi_fund)
+        #币数收益率
+        rate_shouyi_coin = round((fund + money) / price / quanyi_start * 100 - 100, 2)
+        self.dict_record['list_rate_shouyi_coin'].append(rate_shouyi_coin)
+        #K线基准率
+        rate_jizhun = round(price / price_start * 100 - 100, 2)
+        self.dict_record['list_rate_jizhun'].append(rate_jizhun)
+        #保证金率
+        rate_margin = self.get_rate_margin(price, lun_zhangshu_sum, quanyi, mianzhi)
+        self.dict_record['list_rate_margin'].append(rate_margin)
+        #持仓率
+        rate_chicang = round(lun_zhangshu_sum / (fund / mianzhi), 2)
+        self.dict_record['list_rate_chicang'].append(rate_chicang)
+        #回撤率
+        rate_huiche = round((10000 - fund) / (10000) * 100, 2)
+        self.dict_record['list_rate_huiche'].append(rate_huiche)
+        m1='本轮方向'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+ '保证金率' + str(rate_jizhun)+ '持仓率' + str(rate_chicang)
+        m2 = '当前权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '净利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_record['fee_sum'])+'收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
+        m3 = '累计最低保证金率' + str(min(self.dict_record['list_rate_margin'])) + '最大持仓率' + str(max(self.dict_record['list_rate_chicang'])) + '最大回撤' + str(max(self.dict_record['list_rate_huiche']))
+        self.log(m1)
+        self.log(m2)
+        self.log(m3)
     def ok(self,price,mianzhi):
         #遍历网格,更新单个收益,累计总收益,更新权益
         shouyi_sum = 0
@@ -183,11 +162,13 @@ class Policyshunshiwg(Model):
                 self.list_wg[i]['rate_shouyi_max'] = max(self.list_wg[i]['rate_shouyi_max'],rate_shouyi)
                 shouyi_sum += shouyi
                 zhangshu_sum += zhangshu_wg
-        # 更新权益
-        self.dict_acc['quanyi'] = round(self.dict_acc['lun_quanyi_start'] + shouyi_sum, 8)
-        self.dict_acc['lun_zhangshu_sum']=zhangshu_sum
-        return
-    def ing(self,high,low,mianzhi,price):
+
+        res={
+            'shouyi_sum':shouyi_sum,
+            'zhangshu_sum':zhangshu_sum,
+        }
+        return res
+    def ing(self,high,low):
         # 遍历网格,如果duo_ing  价格跌破就成交   waitkong 涨破就成交
         for i in range(len(self.list_wg)):
             wg = self.list_wg[i]
@@ -195,7 +176,7 @@ class Policyshunshiwg(Model):
                 self.list_wg[i]['status'] = 'duo_ok'
                 self.list_wg[i]['date'] = self.dict_data['date']
                 self.log('开多成交,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
-            if wg['status'] == 'kong_ing' and high > wg['price_wg']:
+            elif wg['status'] == 'kong_ing' and high > wg['price_wg']:
                 self.list_wg[i]['status'] = 'kong_ok'
                 self.list_wg[i]['date'] = self.dict_data['date']
                 self.log('开空成交,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
@@ -211,13 +192,13 @@ class Policyshunshiwg(Model):
                 self.list_wg[i]['status'] = 'kong_ing'
                 # self.log('委托开空,委托价'+str(wg['price_wg'])+'委托张数'+str(wg['zhangshu_wg']))
         return
-    def creat(self,price,atr,ma,mianzhi,fund):
+    def creat(self,price,atr,ma,mianzhi,fund,param_zhangshu_ni,param_jiange):
         self.list_wg = []
         zhangshu_chong=int(fund/mianzhi)
-        zhangshu_ni = max(round(self.dict_param['zhangshu']*zhangshu_chong,2),1)
+        zhangshu_ni = max(round(param_zhangshu_ni*zhangshu_chong,2),1)
         zhangshu_ni=int(zhangshu_ni)
         zhangshu_shun=zhangshu_ni*2
-        jiange_wg = atr * self.dict_param['jiange']
+        jiange_wg = round(atr * param_jiange,2)
         direction=self.get_direction(price,ma)
         status = ''
         zhangshu_wg=0
@@ -264,7 +245,6 @@ class Policyshunshiwg(Model):
         self.dict_acc['lun_zhangshu_sum'] = zhangshu_chong
         self.log('账户='+str(self.dict_acc))
         self.log('创建网格完成,总格数'+str(len(self.list_wg))+'间隔'+str(jiange_wg)+'方向'+str(direction)+'初始资产'+str(fund))
-        self.log('创建网格完成,总格数'+str(len(self.list_wg))+'间隔'+str(jiange_wg)+'方向'+str(direction)+'初始资产'+str(fund))
     def buy(self,price):
         quanyi = round(self.dict_acc['money'] / price, 8)
         self.dict_acc['quanyi'] = quanyi
@@ -273,23 +253,67 @@ class Policyshunshiwg(Model):
         self.dict_record['quanyi_start'] = quanyi
         self.dict_record['fund_start'] =price*quanyi
         self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_record['price_start'])+'初始权益'+str(self.dict_record['quanyi_start']))
-        self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_record['price_start'])+'初始权益'+str(self.dict_record['quanyi_start']))
-    def run(self,open,high,low,close,atr,ma):
+    def run(self,open,high,low,close,atr,ma,timechuo):
         if self.dict_acc['quanyi'] == 0:
             self.buy(close)
             return
         else:
             mianzhi = self.dict_param['mianzhi']
             if self.list_wg==[]:
-                self.creat(close,atr,ma,mianzhi,self.dict_acc['quanyi']*close)
+                self.creat(close,atr,ma,mianzhi,self.dict_acc['quanyi']*close,self.dict_param['zhangshu_ni'],self.dict_param['jiange'])
                 self.txt_remove('创建网格成功')
             else:
+                self.dict_acc['lun_price_high'] = max(self.dict_acc['lun_price_high'], high)
+                self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'], low)
                 if len(self.list_wg)>1:
-                    self.ing(high,low,mianzhi,close)
+                    self.ing(high,low)
                     self.wait(high,low)
-                self.ok(close,mianzhi)
-                self.uprecord(close,mianzhi)
-                self.close(close,mianzhi)
+                #处理已成交订单
+                res=self.ok(close,mianzhi)
+                self.dict_acc['quanyi'] = round(self.dict_acc['lun_quanyi_start'] + res['shouyi_sum'], 8)
+                self.dict_acc['lun_zhangshu_sum'] = res['zhangshu_sum']
+                #更新本轮收益率
+                fund = round(close * self.dict_acc['quanyi'], 4)
+                self.dict_acc['lun_rate_shouyi'] = round(fund / self.dict_acc['lun_fund_start'] * 100 - 100, 2)
+                if self.dict_acc['lun_rate_shouyi'] > self.dict_acc['lun_rate_shouyi_max']:
+                    self.dict_acc['lun_rate_shouyi_max'] = self.dict_acc['lun_rate_shouyi']
+                    self.log('恭喜,本轮收益率达到' + str(self.dict_acc['lun_rate_shouyi']))
+                #记录数据
+                if timechuo>self.dict_record['timechuo_record']:
+                    self.dict_record['timechuo_record'] = timechuo + 3600 * 4
+                    self.uprecord(close,
+                                  mianzhi,
+                                  self.dict_acc['quanyi'],
+                                  self.dict_acc['money'],
+                                  self.dict_record['fund_start'],
+                                  self.dict_record['quanyi_start'],
+                                  self.dict_record['price_start'],
+                                  self.dict_acc['lun_zhangshu_sum'])
+                #止盈止损
+                res=self.close(close,mianzhi,
+                           self.dict_param['zhiying'],
+                           self.dict_param['huiche'],
+                           self.dict_param['zhisun'],
+                           self.dict_param['zhisun_atr'],
+                           self.dict_acc['lun_direction'],
+                           self.dict_acc['lun_rate_shouyi'],
+                           self.dict_acc['lun_rate_shouyi_max'],
+                           self.dict_acc['lun_zhangshu_sum'],
+                           timechuo
+                           )
+                #扣除手续费
+                if res!=False and res>0:
+                    fee_close=res
+                    self.log('扣手续费之前权益' + str(self.dict_acc['quanyi']))
+                    self.dict_acc['quanyi'] -= 2 * fee_close
+                    self.dict_record['fee_sum'] += 2 * fee_close
+                    self.log('扣手续费之后权益' + str(self.dict_acc['quanyi']))
+                    #卖币
+                    if self.dict_acc['quanyi'] * close- self.dict_record['fund_start']>50:
+                        res=self.sell(self.dict_acc['quanyi'],close,self.dict_record['fund_start'])
+                        self.dict_acc['quanyi'] += res['coin']
+                        self.dict_acc['money'] +=res['money']
+                        self.log('卖币成功,卖出数量' + str(res['coin']) + '得到钱' + str(res['money']))
     def start(self,coinname,date_start,date_end,param={}):
         self.coinname=str(coinname).lower()
         # 1参数容器
@@ -303,13 +327,13 @@ class Policyshunshiwg(Model):
             'quanyi_start': 0,
             'fund_start': 0,
             'fee_sum': 0,
-            'list_rate_shouyi_fund': [],
             'list_rate_shouyi_coin': [],
+            'list_rate_shouyi_fund': [],
             'list_rate_jizhun': [],
-            'list_rate_shouyi_lun': [],
             'list_rate_chicang': [0],
             'list_rate_margin': [],
             'list_rate_huiche': [],
+            'list_rate_shouyi_close': [],
         }
         #3.账户容器
         self.dict_acc = {
@@ -337,7 +361,7 @@ class Policyshunshiwg(Model):
             'atr': 0,
         }
         self.list_wg = []
-        self.txt_remove(self.coinname)
+        self.txt_remove(self.coinname+'.txt')
         # 遍历数据
         # 读取历史数据
         df_1m = pd.read_csv(os.path.abspath('.') + '\\klineok\\' + coinname + '1m1dok.csv', index_col=0)
@@ -375,7 +399,7 @@ class Policyshunshiwg(Model):
             }
             if self.dict_data['timechuo'] > self.date_totimechuo(date_start) and self.dict_data[
                 'timechuo'] < self.date_totimechuo(date_end):
-                self.run(open,high,low,close,atr,ma91)
+                self.run(open,high,low,close,atr,ma91,timechuo)
 
 
 
