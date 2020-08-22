@@ -51,27 +51,13 @@ class Model(Base):
             return 'duo'
         else:
             return 'kong'
-    def get_zhangshu(self,isduo=True,list_wg=[]):
-        zhangshu_duo = 0
-        zhangshu_kong = 0
-        for i in range(len(list_wg)):
-            wg = list_wg[i]
-            if wg['status'] == 'kong_ok':
-                zhangshu_kong += wg['zhangshu_wg']
-            if wg['status'] == 'duo_ok':
-                zhangshu_duo += wg['zhangshu_wg']
-        if isduo==True:
-            return zhangshu_duo
-        else:
-            return zhangshu_kong
     def wg_tocsv(self,title,timechuo,price,lun_rate_shouyi,list_wg=[]):
         name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','date']
         df = pd.DataFrame(columns=name, data=list_wg)  # 数据有三列，列名分别为one,two,three
         datem = self.timechuo_todate(timechuo)
-        zhangshu_duo = self.get_zhangshu(True,list_wg)
-        zhangshu_kong = self.get_zhangshu(False,list_wg)
-        m = '价格' + str(price)+ 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '收益率' + str(lun_rate_shouyi)
-        title=os.getcwd() + '\\'+str(timechuo)+ m + title + '.csv'
+
+        m =title+ '收益率' + str(lun_rate_shouyi)+ '价格' + str(price)
+        title=os.getcwd() + '\\'+str(timechuo)+ m+ '.csv'
         df.to_csv(title, encoding='gbk',index=None)
 
     def chart(self, title, list1=[], list2=[], list3=[], list4=[]):
@@ -80,6 +66,8 @@ class Model(Base):
         for i in range(len(list1)):
             listx.append(i + 1)
         plt.rcParams['font.sans-serif'] = ['SimHei']
+        plt.rcParams['axes.unicode_minus'] = False
+
         liney1 = plt.plot(listx, list1)
         plt.setp(liney1, color='r')
         if len(list2)>0:
