@@ -10,6 +10,7 @@ import time, datetime
 import matplotlib.pyplot as plt
 import os
 import json
+import pandas as pd
 from class_base import Base
 #注释完毕
 class Model(Base):
@@ -45,16 +46,37 @@ class Model(Base):
             return 0
         fee = round(int(zhangshu) * mianzhi / price * 0.03 * 0.01, 8)  # 开仓手续费
         return fee
-
-    def wg_show(self, list_wg=[]):
-        if len(list_wg) == 0:
-            self.log('网格为空')
-            return
+    def get_direction(self,price,ma):
+        if price>ma:
+            return 'duo'
+        else:
+            return 'kong'
+    def get_zhangshu(self,isduo=True,list_wg=[]):
+        zhangshu_duo = 0
+        zhangshu_kong = 0
         for i in range(len(list_wg)):
-            m = str(list_wg[i])
-            # self.log(m)
-            if list_wg[i]['status'] != 'duo_wait' and list_wg[i]['status'] != 'kong_wait':
-                self.log(m)
+            wg = list_wg[i]
+            if wg['status'] == 'kong_ok':
+                zhangshu_kong += wg['zhangshu_wg']
+            if wg['status'] == 'duo_ok':
+                zhangshu_duo += wg['zhangshu_wg']
+        if isduo==True:
+            return zhangshu_duo
+        else:
+            return zhangshu_kong
+    def wg_tocsv(self,title,timechuo,price,huiche_max,lun_rate_shouyi,list_wg=[]):
+        name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','date']
+        df = pd.DataFrame(columns=name, data=list_wg)  # 数据有三列，列名分别为one,two,three
+        datem = self.timechuo_todate(timechuo)
+        zhangshu_duo = self.get_zhangshu(True)
+        zhangshu_kong = self.get_zhangshu(False)
+        m = '价格' + str(price) + '回撤' + str(huiche_max) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(lun_rate_shouyi)
+        print(df)
+        title=os.getcwd() + '\\'+ m + title + '.csv'
+        print(title)
+        df.to_csv(title, encoding='gbk',index=None)
+        exit()
+
     def chart(self, title, list1=[], list2=[], list3=[], list4=[]):
         # 横坐标
         listx = []

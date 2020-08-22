@@ -16,24 +16,7 @@ from class_model import Model
 class Policyshunshiwg(Model):
     def __init__(self):
         pass
-    def get_direction(self,price,ma):
-        if price>ma:
-            return 'duo'
-        else:
-            return 'kong'
-    def get_zhangshu(self,isduo=True):
-        zhangshu_duo = 0
-        zhangshu_kong = 0
-        for i in range(len(self.list_wg)):
-            wg = self.list_wg[i]
-            if wg['status'] == 'kong_ok':
-                zhangshu_kong += wg['zhangshu_wg']
-            if wg['status'] == 'duo_ok':
-                zhangshu_duo += wg['zhangshu_wg']
-        if isduo==True:
-            return zhangshu_duo
-        else:
-            return zhangshu_kong
+
     def log_paramlist(self,content):
         content = str(content)+ '\n'
         url=os.getcwd() + '/logparamlist.txt'
@@ -69,16 +52,6 @@ class Policyshunshiwg(Model):
         self.log_paramlist(self.dict_record['list_rate_shouyi_close'])
         self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(max(self.dict_record['list_rate_huiche'])), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
 
-
-    def wg_tocsv(self,title,timechuo,price):
-        name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','timechuo','date']
-        test = pd.DataFrame(columns=name, data=self.list_wg)  # 数据有三列，列名分别为one,two,three
-        datem = self.timechuo_todate(timechuo)
-        zhangshu_duo = self.get_zhangshu(True)
-        zhangshu_kong = self.get_zhangshu(False)
-        m = '价格' + str(price) + '回撤' + str(max(self.dict_record['list_rate_huiche'])) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(self.dict_acc['lun_rate_shouyi'])
-        test.to_csv(os.getcwd() + '/' + datem + m + title + '.csv', encoding='gbk')
-
     def log(self,content):
         self.txt_write(self.coinname,self.dict_data['date']+'----'+str(self.dict_data['close'])+'----'+content)
     def sell(self,quanyi,price,fund_start):
@@ -103,7 +76,7 @@ class Policyshunshiwg(Model):
                 exit()
         if todo == '止盈' or todo == '止损空' or todo == '止损多' or todo == '解冻':
             #快照网格
-            self.wg_tocsv(self.coinname+todo,timechuo,price)
+            self.wg_tocsv(self.coinname+todo,timechuo,price,max(self.dict_record['list_rate_huiche']),lun_rate_shouyi,self.list_wg)
             #清空网格
             self.list_wg.clear()
             #记录平仓收益率
@@ -170,17 +143,20 @@ class Policyshunshiwg(Model):
         return res
     def ing(self,high,low):
         # 遍历网格,如果duo_ing  价格跌破就成交   waitkong 涨破就成交
+        istradeok=False
         for i in range(len(self.list_wg)):
             wg = self.list_wg[i]
             if wg['status'] == 'duo_ing' and low < wg['price_wg']:
                 self.list_wg[i]['status'] = 'duo_ok'
                 self.list_wg[i]['date'] = self.dict_data['date']
                 self.log('开多成交,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
+                istradeok = True
             elif wg['status'] == 'kong_ing' and high > wg['price_wg']:
                 self.list_wg[i]['status'] = 'kong_ok'
                 self.list_wg[i]['date'] = self.dict_data['date']
                 self.log('开空成交,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
-        return
+                istradeok = True
+        return istradeok
     def wait(self,high,low):
         #遍历网格,如果waitduo  价格超过,就委托   waitkong 跌破就委托
         for i in range(len(self.list_wg)):
@@ -253,22 +229,25 @@ class Policyshunshiwg(Model):
         self.dict_record['quanyi_start'] = quanyi
         self.dict_record['fund_start'] =price*quanyi
         self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_record['price_start'])+'初始权益'+str(self.dict_record['quanyi_start']))
-    def run(self,open,high,low,close,atr,ma,timechuo):
+    #调用交易函数 买入 创建 开仓 止盈止损  记录 手续费 卖币
+    def run(self,open,high,low,close,atr,ma,timechuo,mianzhi):
         if self.dict_acc['quanyi'] == 0:
             self.buy(close)
             return
         else:
-            mianzhi = self.dict_param['mianzhi']
             if self.list_wg==[]:
                 self.creat(close,atr,ma,mianzhi,self.dict_acc['quanyi']*close,self.dict_param['zhangshu_ni'],self.dict_param['jiange'])
                 self.txt_remove('创建网格成功')
             else:
-                self.dict_acc['lun_price_high'] = max(self.dict_acc['lun_price_high'], high)
-                self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'], low)
+                #处理等待开仓的,更新最高价最低价
                 if len(self.list_wg)>1:
-                    self.ing(high,low)
+                    res=self.ing(high,low)
+                    if res==True:
+                        #更新开仓最高价最低价
+                        self.dict_acc['lun_price_high'] = max(self.dict_acc['lun_price_high'], high)
+                        self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'], low)
                     self.wait(high,low)
-                #处理已成交订单
+                #处理已成交订单,更新权益 本轮张数
                 res=self.ok(close,mianzhi)
                 self.dict_acc['quanyi'] = round(self.dict_acc['lun_quanyi_start'] + res['shouyi_sum'], 8)
                 self.dict_acc['lun_zhangshu_sum'] = res['zhangshu_sum']
@@ -301,19 +280,20 @@ class Policyshunshiwg(Model):
                            self.dict_acc['lun_zhangshu_sum'],
                            timechuo
                            )
-                #扣除手续费
+                #止盈止损成功后,扣除手续费
                 if res!=False and res>0:
                     fee_close=res
                     self.log('扣手续费之前权益' + str(self.dict_acc['quanyi']))
                     self.dict_acc['quanyi'] -= 2 * fee_close
                     self.dict_record['fee_sum'] += 2 * fee_close
                     self.log('扣手续费之后权益' + str(self.dict_acc['quanyi']))
-                    #卖币
+                    #止盈止损成功后,判断卖币
                     if self.dict_acc['quanyi'] * close- self.dict_record['fund_start']>50:
                         res=self.sell(self.dict_acc['quanyi'],close,self.dict_record['fund_start'])
                         self.dict_acc['quanyi'] += res['coin']
                         self.dict_acc['money'] +=res['money']
                         self.log('卖币成功,卖出数量' + str(res['coin']) + '得到钱' + str(res['money']))
+    #初始化容器 遍历指定区间k线,调用run
     def start(self,coinname,date_start,date_end,param={}):
         self.coinname=str(coinname).lower()
         # 1参数容器
@@ -399,7 +379,7 @@ class Policyshunshiwg(Model):
             }
             if self.dict_data['timechuo'] > self.date_totimechuo(date_start) and self.dict_data[
                 'timechuo'] < self.date_totimechuo(date_end):
-                self.run(open,high,low,close,atr,ma91,timechuo)
+                self.run(open,high,low,close,atr,ma91,timechuo,self.dict_param['mianzhi'])
 
 
 

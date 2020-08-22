@@ -9,8 +9,7 @@ pd.set_option('display.max_columns', None)
 import numpy as np
 class Base():
 
-    #基础通用方法
-
+    #基础日期操作
     def timechuo_getzerotimechuo(self, timechuo):
         zero_timechuo = int(timechuo - (timechuo % 86400))+3600*16
         return zero_timechuo
@@ -24,6 +23,7 @@ class Base():
     def get_date_now(self):
         res=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return res
+    #基础文本操作
     def txt_write(self,filename,content):
         with open(filename+".txt", "a+") as f:
             f.write(content+'\n')
