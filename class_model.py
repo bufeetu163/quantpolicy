@@ -64,18 +64,15 @@ class Model(Base):
             return zhangshu_duo
         else:
             return zhangshu_kong
-    def wg_tocsv(self,title,timechuo,price,huiche_max,lun_rate_shouyi,list_wg=[]):
+    def wg_tocsv(self,title,timechuo,price,lun_rate_shouyi,list_wg=[]):
         name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','date']
         df = pd.DataFrame(columns=name, data=list_wg)  # 数据有三列，列名分别为one,two,three
         datem = self.timechuo_todate(timechuo)
-        zhangshu_duo = self.get_zhangshu(True)
-        zhangshu_kong = self.get_zhangshu(False)
-        m = '价格' + str(price) + '回撤' + str(huiche_max) + 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '本轮收益率' + str(lun_rate_shouyi)
-        print(df)
-        title=os.getcwd() + '\\'+ m + title + '.csv'
-        print(title)
+        zhangshu_duo = self.get_zhangshu(True,list_wg)
+        zhangshu_kong = self.get_zhangshu(False,list_wg)
+        m = '价格' + str(price)+ 'duo' + str(zhangshu_duo) + 'kong' + str(zhangshu_kong) + '收益率' + str(lun_rate_shouyi)
+        title=os.getcwd() + '\\'+str(timechuo)+ m + title + '.csv'
         df.to_csv(title, encoding='gbk',index=None)
-        exit()
 
     def chart(self, title, list1=[], list2=[], list3=[], list4=[]):
         # 横坐标
@@ -104,7 +101,8 @@ class Model(Base):
             return 99999
         else:
             margin = (mianzhi * zhangshu) / price / 10
-            return round(quanyi / margin * 100 - 12, 2)
+            rate_margin=round(quanyi / margin * 100 - 12, 2)
+            return rate_margin
     def get_nianhua(self, rate_shouyi,time_start, timechuo_end):
         day = (int(timechuo_end) - int(time_start)) / 86400
         nianhua = float(rate_shouyi) * 365 / day

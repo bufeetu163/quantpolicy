@@ -18,13 +18,14 @@ def main():
     param={
         'zhangshu_ni':0.05,
         'jiange':0.2,
-        'zhiying':9,
+        'zhiying':5,
         'huiche':30,
         'zhisun':-5,
         'zhisun_atr':2,
 
     }
-    robot.start('eth',"2018-06-18 23:40","2019-11-18 23:59",param)
+    robot.start('eth',"2018-06-18 23:40","2018-11-18 23:59",param)
 
 if __name__ == '__main__':
     main()
+    exit()

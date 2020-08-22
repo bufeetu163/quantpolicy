@@ -65,7 +65,13 @@ class Policyshunshiwg(Model):
     def close(self,price,mianzhi,zhiying,huiche,zhisun,zhisun_atr,lun_direction,lun_rate_shouyi,lun_rate_shouyi_max,lun_zhangshu_sum,timechuo):
         todo=''
         if lun_rate_shouyi_max>zhiying and lun_rate_shouyi<=lun_rate_shouyi_max*(1-huiche*0.01):
-            todo = '止盈'
+            if lun_direction == 'kong':
+                todo = '止盈空'
+            elif lun_direction=='duo':
+                todo = '止盈多'
+            else:
+                todo = '止盈其他'
+                exit()
         if lun_rate_shouyi<0-abs(zhisun):
             if lun_direction == 'kong':
                 todo = '止损空'
@@ -76,7 +82,7 @@ class Policyshunshiwg(Model):
                 exit()
         if todo == '止盈' or todo == '止损空' or todo == '止损多' or todo == '解冻':
             #快照网格
-            self.wg_tocsv(self.coinname+todo,timechuo,price,max(self.dict_record['list_rate_huiche']),lun_rate_shouyi,self.list_wg)
+            self.wg_tocsv(self.coinname+todo,timechuo,price,lun_rate_shouyi,self.list_wg)
             #清空网格
             self.list_wg.clear()
             #记录平仓收益率
@@ -108,9 +114,9 @@ class Policyshunshiwg(Model):
         #回撤率
         rate_huiche = round((10000 - fund) / (10000) * 100, 2)
         self.dict_record['list_rate_huiche'].append(rate_huiche)
-        m1='本轮方向'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+ '保证金率' + str(rate_jizhun)+ '持仓率' + str(rate_chicang)
-        m2 = '当前权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '净利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_record['fee_sum'])+'收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
-        m3 = '累计最低保证金率' + str(min(self.dict_record['list_rate_margin'])) + '最大持仓率' + str(max(self.dict_record['list_rate_chicang'])) + '最大回撤' + str(max(self.dict_record['list_rate_huiche']))
+        m1='==========方向'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+ '保证金率' + str(rate_margin)+ '持仓率' + str(rate_chicang)
+        m2 = '==========权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_record['fee_sum'])+'收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
+        m3 = '==========最低保证金率' + str(min(self.dict_record['list_rate_margin'])) + '最大持仓率' + str(max(self.dict_record['list_rate_chicang'])) + '最大回撤' + str(max(self.dict_record['list_rate_huiche']))
         self.log(m1)
         self.log(m2)
         self.log(m3)
@@ -149,12 +155,12 @@ class Policyshunshiwg(Model):
             if wg['status'] == 'duo_ing' and low < wg['price_wg']:
                 self.list_wg[i]['status'] = 'duo_ok'
                 self.list_wg[i]['date'] = self.dict_data['date']
-                self.log('开多成交,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
+                self.log('开多成功,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
                 istradeok = True
             elif wg['status'] == 'kong_ing' and high > wg['price_wg']:
                 self.list_wg[i]['status'] = 'kong_ok'
                 self.list_wg[i]['date'] = self.dict_data['date']
-                self.log('开空成交,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
+                self.log('开空成功,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
                 istradeok = True
         return istradeok
     def wait(self,high,low):
@@ -290,9 +296,13 @@ class Policyshunshiwg(Model):
                     #止盈止损成功后,判断卖币
                     if self.dict_acc['quanyi'] * close- self.dict_record['fund_start']>50:
                         res=self.sell(self.dict_acc['quanyi'],close,self.dict_record['fund_start'])
-                        self.dict_acc['quanyi'] += res['coin']
+                        self.dict_acc['quanyi'] -= res['coin']
                         self.dict_acc['money'] +=res['money']
                         self.log('卖币成功,卖出数量' + str(res['coin']) + '得到钱' + str(res['money']))
+                    self.log('                                                ')
+                    self.log('                                                ')
+                    self.log('                                                ')
+                    self.log('                                                ')
     #初始化容器 遍历指定区间k线,调用run
     def start(self,coinname,date_start,date_end,param={}):
         self.coinname=str(coinname).lower()
@@ -381,7 +391,7 @@ class Policyshunshiwg(Model):
                 'timechuo'] < self.date_totimechuo(date_end):
                 self.run(open,high,low,close,atr,ma91,timechuo,self.dict_param['mianzhi'])
 
-
+            self.zongjie()
 
 
 
