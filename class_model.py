@@ -125,21 +125,7 @@ class Model(Base):
         shenglv=num_ying/num_close
         yingkui = (sum_ying / num_ying) / (sum_kui / num_kui)
         return [round(shenglv,2),round(abs(yingkui),2)]
-    def get_num_lianxuyingkui(self,list_rate_shouyi_close={}):
-        max_num_ying=0
-        max_num_kui=0
-        num_ying = 0
-        num_kui = 0
-        for shouyi in list_rate_shouyi_close:
-            if shouyi > 0:
-                num_ying += 1
-                num_kui=0
-                max_num_ying=max(max_num_ying,num_ying)
-            else:
-                num_kui += 1
-                num_ying=0
-                max_num_kui=max(max_num_kui,num_kui)
-        return [max_num_ying,max_num_kui]
+
     def get_huiche_max(self, list_rate_shouyi=[]):
         length = len(list_rate_shouyi)
         huiche_max = 0

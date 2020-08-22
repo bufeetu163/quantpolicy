@@ -17,40 +17,24 @@ class Policyshunshiwg(Model):
     def __init__(self):
         pass
 
-    def log_paramlist(self,content):
-        content = str(content)+ '\n'
-        url=os.getcwd() + '/logparamlist.txt'
-        f = open(url, mode='a+')
-        f.write(str(content))
-        # f.write(str(content)+'        '+str(self.get_date_now()))
-        f.close()
-        print(content)
-    def zongjie(self):
+
+    def zongjie(self,quanyi,price,money,fee_sum,date_start,date_end,huiche_max):
         # 资产 净利润 手续费  年化率 最大回撤 胜率 盈亏比
         # 持仓率 最低保证金率 连续盈利 连续亏损  结单次数 平均每次结单收益
         # 张数 间隔 止盈 止损
-        fund=str(round(float(self.dict_acc['quanyi'])*float(self.dict_data['close']),2))
-        money=str(self.dict_acc['money'])
-        fee=str(self.dict_record['fee_sum'])
-        rate_nianhua = str(self.get_nianhua(self.dict_record['list_rate_shouyi_fund'][-1], self.date_totimechuo('2018-09-15'), self.dict_param['timechuo_end']))
-        huiche_max=str(max(self.dict_record['list_rate_huiche']))
+        fund=str(round(quanyi*price,2))
+        rate_nianhua = str(self.get_nianhua(self.dict_record['list_rate_shouyi_fund'][-1], self.date_totimechuo(date_start), self.date_totimechuo(date_end)))
         res = self.get_shenglv_yingkui(self.dict_record['list_rate_shouyi_close'])
         rate_shenglv=str(res[0])
         rate_yingkui = str(res[1])
         rate_chicang=str(max(self.dict_record['list_rate_chicang']))
         rate_margin_min=str(min(self.dict_record['list_rate_margin']))
-        res=self.get_num_lianxuyingkui(self.dict_record['list_rate_shouyi_close'])
-        num_lianxuying=str(res[0])
-        num_lianxukui=str(res[1])
-        num_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
+        times_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
         aver_shouyi=str(sum(self.dict_record['list_rate_shouyi_close'])/len(self.dict_record['list_rate_shouyi_close']))
-        m1=self.coinname+'|'+fund+'|'+money+'|'+fee+'|'+rate_nianhua+'|'+huiche_max+'|'+rate_shenglv+'|'+rate_yingkui
-        m2='|'+rate_chicang+'|'+rate_margin_min+'|'+num_lianxuying+'|'+num_lianxukui+'|'+num_shouyi+'|'+aver_shouyi
-        m3='|' + str(self.dict_param['jiange']) + '|' + str(self.dict_param['zhangshu_shun'])+ '|' + str(self.dict_param['zhangshu_ni']) + '|' + str(self.dict_param['zhiying']) + '|' + str(self.dict_param['zhisun'])+ '|' + str(self.dict_param['sleep_day'])
-        m3= '|' + str(self.dict_param['zhangshu_shun'])+ '|' + str(self.dict_param['zhiying']) + '|' + str(self.dict_param['zhisun'])+ '|' + str(self.dict_param['sleep_day'])
-        self.log_paramlist(m1+m2+m3)
-        self.log_paramlist(self.dict_record['list_rate_shouyi_close'])
-        self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(max(self.dict_record['list_rate_huiche'])), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
+        m1=self.coinname+'|'+fund+'|'+money+'|'+fee_sum+'|'+rate_nianhua+'|'+huiche_max+'|'+rate_shenglv+'|'+rate_yingkui
+        m2='|'+rate_chicang+'|'+rate_margin_min+'|'+times_shouyi+'|'+aver_shouyi
+        self.txt_write('zongjie',m1+m2)
+        self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
 
     def log(self,content):
         self.txt_write(self.coinname,self.dict_data['date']+'----'+str(self.dict_data['close'])+'----'+content)
@@ -391,7 +375,13 @@ class Policyshunshiwg(Model):
                 'timechuo'] < self.date_totimechuo(date_end):
                 self.run(open,high,low,close,atr,ma91,timechuo,self.dict_param['mianzhi'])
 
-            self.zongjie()
+        self.zongjie(quanyi=self.dict_acc['quanyi'],
+                     price=self.dict_data['close'],
+                     money=self.dict_acc['money'],
+                     fee_sum=self.dict_record['fee_sum'],
+                     date_start=date_start,
+                     date_end=date_end,
+                     huiche_max=max(self.dict_record['list_rate_huiche']))
 
 
 
