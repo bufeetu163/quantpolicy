@@ -21,9 +21,8 @@ def main():
         'zhiying':6,
         'huiche':30,
         'zhisun':-5,
-        'zhisun_atr':0,
     }
-    robot.start('eth',"2018-06-18 23:40","2018-11-18 23:59",param)
+    robot.start('eth',"2018-06-18 23:40","2019-06-18 23:59",param)
 
 if __name__ == '__main__':
     main()

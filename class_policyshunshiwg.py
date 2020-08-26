@@ -30,11 +30,12 @@ class Policyshunshiwg(Model):
         rate_chicang=str(max(self.dict_record['list_rate_chicang']))
         rate_margin_min=str(min(self.dict_record['list_rate_margin']))
         times_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
-        aver_shouyi=str(sum(self.dict_record['list_rate_shouyi_close'])/len(self.dict_record['list_rate_shouyi_close']))
+        aver_shouyi=str(round(sum(self.dict_record['list_rate_shouyi_close'])/len(self.dict_record['list_rate_shouyi_close']),2))
         m1=self.coinname+'|'+str(fund)+'|'+str(money)+'|'+str(fee_sum)+'|'+str(rate_nianhua)+'|'+str(huiche_max)+'|'+str(rate_shenglv)+'|'+str(rate_yingkui)
         m2='|'+str(rate_chicang)+'|'+str(rate_margin_min)+'|'+str(times_shouyi)+'|'+str(aver_shouyi)
-        self.txt_write('zongjie',m1+m2)
-        self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
+        m3=str(self.dict_param)
+        self.txt_write('zongjie',m1+m2+m3)
+        self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max) + '胜率' + str(rate_shenglv) + '盈亏比' + str(rate_yingkui), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
         m1 = self.coinname + '|fund' + str(fund) + '|money' + str(money) + '|fee_sum' + str(fee_sum) + '|nianhua' + str(
             rate_nianhua) + '|最大回撤' + str(huiche_max) + '|胜率' + str(rate_shenglv) + '|盈亏比' + str(rate_yingkui)
         m2 = '|最大持仓率' + str(rate_chicang) + '|最低保证金率' + str(rate_margin_min) + '|平仓次数' + str(times_shouyi) + '|预期收益' + str(aver_shouyi)
@@ -50,7 +51,7 @@ class Policyshunshiwg(Model):
             'money':money,
         }
         return res
-    def close(self,price,mianzhi,zhiying,huiche,zhisun,zhisun_atr,lun_direction,lun_rate_shouyi,lun_rate_shouyi_max,lun_zhangshu_sum,timechuo,lun_price_high,lun_price_low,atr):
+    def close(self,price,mianzhi,zhiying,huiche,zhisun,lun_direction,lun_rate_shouyi,lun_rate_shouyi_max,lun_zhangshu_sum,timechuo,lun_price_high,lun_price_low,atr):
         todo=''
         if lun_rate_shouyi_max>zhiying and lun_rate_shouyi<=lun_rate_shouyi_max*(1-huiche*0.01):
             if lun_direction == 'kong':
@@ -68,10 +69,7 @@ class Policyshunshiwg(Model):
             else:
                 todo = '止损其他'
                 exit()
-        if lun_direction == 'kong' and price>lun_price_low+zhisun_atr*atr and zhisun_atr>0:
-            todo = '止损ATR空'
-        elif lun_direction == 'duo' and price<lun_price_high-zhisun_atr*atr and zhisun_atr>0:
-            todo = '止损ATR多'
+
         if todo == '止盈空' or todo == '止盈多' or todo == '止损空' or todo == '止损多' or todo == '止损ATR空' or todo == '止损ATR多'  or todo == '解冻':
             #快照网格
             self.wg_tocsv(self.coinname+todo,timechuo,price,lun_rate_shouyi,self.list_wg)
@@ -271,7 +269,6 @@ class Policyshunshiwg(Model):
                            self.dict_param['zhiying'],
                            self.dict_param['huiche'],
                            self.dict_param['zhisun'],
-                           self.dict_param['zhisun_atr'],
                            self.dict_acc['lun_direction'],
                            self.dict_acc['lun_rate_shouyi'],
                            self.dict_acc['lun_rate_shouyi_max'],
@@ -279,7 +276,7 @@ class Policyshunshiwg(Model):
                            timechuo,
                            self.dict_acc['lun_price_high'],
                            self.dict_acc['lun_price_low'],
-                           atr,
+                           atr
                            )
                 #止盈止损成功后,扣除手续费
                 if res!=False and res>0:
