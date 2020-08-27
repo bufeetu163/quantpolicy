@@ -12,6 +12,7 @@ import os
 import json
 import pandas as pd
 from class_base import Base
+import numpy as np
 #注释完毕
 class Model(Base):
     def get_jingdu(self,coinname):
@@ -46,11 +47,46 @@ class Model(Base):
             return 0
         fee = round(int(zhangshu) * mianzhi / price * 0.03 * 0.01, 8)  # 开仓手续费
         return fee
-    def get_direction(self,price,ma):
-        if price>ma:
-            return 'duo'
+    def get_ma_direction(self,ma,list_ma=[]):
+        #计算ma方向 取前三天ma平均值 和昨天ma比较
+        if len(list_ma)<60*24*3.1:
+            return False
         else:
-            return 'kong'
+            ma_aver=np.mean(list_ma)
+            if ma>ma_aver:
+                return 'duo'
+                pass
+            else:
+                return 'kong'
+    def get_direction(self,price,ma,dc20up,dc20dn,list_ma=[]):
+        if len(list_ma)<60*24*3.1:
+            return False
+        else:
+            ma_aver=np.mean(list_ma)
+            if ma>ma_aver:
+                ma_direction='duo'
+            else:
+                ma_direction='kong'
+            if price > ma:
+                if ma_direction=='duo':
+                    #价格高于ma 且ma向上走
+                    direction='duo'
+                else:
+                    #价格高于ma 且ma向下走
+                    direction='kong'
+            else:
+                if ma_direction == 'kong':
+                    # 价格低于ma 且方向向下走
+                    direction='kong'
+                else:
+                    # 价格低于ma 且方向向上走
+                    direction='duo'
+        #判断是否休眠
+        if price>dc20up or price<dc20dn:
+            return direction
+        else:
+            return 'sleep'
+
     def wg_tocsv(self,title,timechuo,price,lun_rate_shouyi,list_wg=[]):
         name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','date']
         df = pd.DataFrame(columns=name, data=list_wg)  # 数据有三列，列名分别为one,two,three
