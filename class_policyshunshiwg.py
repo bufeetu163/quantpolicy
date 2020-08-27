@@ -69,8 +69,12 @@ class Policyshunshiwg(Model):
             elif lun_direction=='duo':
                 todo = '止盈多'
         if lun_direction == 'kong' and price>lun_price_start+zhisun_atr*atr:
-            todo = '止损空'
+            todo = '逆势止损空'
         elif lun_direction == 'duo' and price<lun_price_start-zhisun_atr*atr:
+            todo = '逆势止损多'
+        elif lun_direction == 'kong' and lun_rate_shouyi<-3:
+            todo = '止损空'
+        elif lun_direction == 'duo' and lun_rate_shouyi<-3:
             todo = '止损多'
         elif lun_direction=='sleep' and direction!='sleep':
             todo = '解冻'

@@ -62,25 +62,23 @@ class Model(Base):
         if len(list_ma)<60*24*3.1:
             return False
         else:
-            ma_aver=np.mean(list_ma)
-            if ma>ma_aver:
-                ma_direction='duo'
+            if price > dc20dn and price < dc20up:
+                return 'sleep'
             else:
-                ma_direction='kong'
-            if price > ma:
-                if ma_direction=='duo':
-                    #价格高于ma 且ma向上走
-                    direction='duo'
+                if price > ma:
+                    if ma > np.mean(list_ma):
+                        # 价格高于ma 且ma向上走
+                        direction = 'duo'
+                    else:
+                        # 价格高于ma 且ma向下走
+                        direction = 'kong'
                 else:
-                    #价格高于ma 且ma向下走
-                    direction='kong'
-            else:
-                if ma_direction == 'kong':
-                    # 价格低于ma 且方向向下走
-                    direction='kong'
-                else:
-                    # 价格低于ma 且方向向上走
-                    direction='duo'
+                    if ma < np.mean(list_ma):
+                        # 价格低于ma 且方向向下走
+                        direction = 'kong'
+                    else:
+                        # 价格低于ma 且方向向上走
+                        direction = 'duo'
         #判断是否休眠
         if price>dc20up or price<dc20dn:
             return direction
