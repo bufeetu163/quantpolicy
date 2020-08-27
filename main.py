@@ -99,7 +99,7 @@ def main():
         'zhiying':9,
         'huiche':30,
     }
-    robot.start('eth',"2018-06-18 23:40","2019-06-18 23:59",param)
+    robot.start('eth',"2018-06-18 23:40","2020-06-18 23:59",param)
 if __name__ == '__main__':
     main()
     exit()

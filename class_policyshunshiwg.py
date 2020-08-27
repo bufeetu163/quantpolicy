@@ -80,7 +80,8 @@ class Policyshunshiwg(Model):
             todo = '解冻'
         if todo == '止盈空' or todo == '止盈多' or todo == '止损空' or todo == '止损多' or todo == '解冻':
             #快照网格
-            self.wg_tocsv(self.coinname+todo,timechuo,price,lun_rate_shouyi,self.list_wg)
+            if todo!='解冻':
+                self.wg_tocsv(self.coinname + todo, timechuo, price, lun_rate_shouyi, self.list_wg)
             #清空网格
             self.list_wg.clear()
             #记录平仓收益率
