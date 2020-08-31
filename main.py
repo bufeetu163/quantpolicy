@@ -9,6 +9,7 @@ from calss_kline import Kline
 from class_base import Base
 from class_turtle import Turtle
 from class_policyshunshiwg import Policyshunshiwg
+from calss_kline import Kline
 import pdb
 '''
 param={
@@ -91,15 +92,26 @@ param={
 
 
 def main():
-    robot=Policyshunshiwg()
-    param={
-        'zhangshu_base':0.05,
-        'jiange_atr':0.2,
-        'zhisun_atr': 2,
-        'zhiying':9,
-        'huiche':30,
-    }
-    robot.start('eth',"2018-06-18 23:40","2020-06-18 23:59",param)
+    robot=Kline()
+    robot.get_kline_csv(symbol='BTCUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='ETHUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='EOSUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='LTCUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='ETCUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='BTCUSDT', zhouqi='1d')
+    robot.get_kline_csv(symbol='ETHUSDT', zhouqi='1d')
+    robot.get_kline_csv(symbol='EOSUSDT', zhouqi='1d')
+    robot.get_kline_csv(symbol='LTCUSDT', zhouqi='1d')
+    robot.get_kline_csv(symbol='ETCUSDT', zhouqi='1d')
+    # robot=Policyshunshiwg()
+    # param={
+    #     'zhangshu_base':0.05,
+    #     'jiange_atr':0.2,
+    #     'zhisun_atr': 2,
+    #     'zhiying':9,
+    #     'huiche':30,
+    # }
+    # robot.start('eth',"2018-06-18 23:40","2020-06-18 23:59",param)
 if __name__ == '__main__':
     main()
     exit()
