@@ -93,16 +93,17 @@ param={
 
 def main():
     robot=Kline()
-    robot.get_kline_csv(symbol='BTCUSDT',zhouqi='1m')
-    robot.get_kline_csv(symbol='ETHUSDT',zhouqi='1m')
-    robot.get_kline_csv(symbol='EOSUSDT',zhouqi='1m')
-    robot.get_kline_csv(symbol='LTCUSDT',zhouqi='1m')
-    robot.get_kline_csv(symbol='ETCUSDT',zhouqi='1m')
     robot.get_kline_csv(symbol='BTCUSDT', zhouqi='1d')
     robot.get_kline_csv(symbol='ETHUSDT', zhouqi='1d')
     robot.get_kline_csv(symbol='EOSUSDT', zhouqi='1d')
     robot.get_kline_csv(symbol='LTCUSDT', zhouqi='1d')
     robot.get_kline_csv(symbol='ETCUSDT', zhouqi='1d')
+    robot.get_kline_csv(symbol='BTCUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='ETHUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='EOSUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='LTCUSDT',zhouqi='1m')
+    robot.get_kline_csv(symbol='ETCUSDT',zhouqi='1m')
+
     # robot=Policyshunshiwg()
     # param={
     #     'zhangshu_base':0.05,

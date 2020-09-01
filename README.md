@@ -32,12 +32,31 @@
     - 均线分析
 
         - price>ma30>ma91  上涨途中  价格在上方,且金叉
-        - price>ma91>ma30 反弹将跌 价格在上方,且死叉
+        - price>ma91>ma30 急速拉升 价格在上方,且死叉
         - ma30>price>ma91  即将上涨   价格在中间,且金叉
         - 
         - ma91>price>ma30 即将下跌   价格在中间,且死叉
         - ma91>ma30>price 正在下跌  价格在下方,且死叉
-        - ma30>ma91>price  无法判断   价格在下方,且金叉
-        - 
-        - 
+        - ma30>ma91>price  急速下跌,不敢抄底
+
+    - 均线网格策略
+
+    - ```
+        选择方向:双均线和价格关系
+        创建网格:张数来自参数  间隔来自参数*atr   
+        开仓:
+        止盈:最高点回撤参数*atr,且盈利满足一定比例
+        止损:最高点回撤参数*atr,或亏损满足一定比例
+        休眠:出现涨幅满足回撤参数*atr,且大于休眠天数
+        
+        参数列表:
+        param_zhangshu  0.03
+        paran_jiange 0.3
+        paran_huiche 1
+        param_zhiying 6
+        param_zhisun 2
+        paran_sleep 1
+        ```
+
+        
 
