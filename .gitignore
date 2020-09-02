@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 .idea/
 klineok/
+kline_1d/
+kline_1m/
+klinebase/

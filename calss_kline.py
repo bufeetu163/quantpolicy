@@ -11,12 +11,18 @@ from class_base import Base
 class Kline(Base):
     def __init__(self):
         print('创建kline类')
+    def chuli_1d(self,coinname):
+        self.kline_ma91('./klinebase/1d_'+coinname+'.csv')
+        self.kline_ma60('./klinebase/1d_'+coinname+'.csv')
+        self.kline_dc('./klinebase/1d_'+coinname+'.csv')
+        self.kline_atr(coinname, './klinebase/1d_'+coinname+'.csv')
     def kline_daytomin(self,coinname):
         df_1d = pd.read_csv(os.path.abspath('.') + '\\kline_1d\\' + coinname + '_1d.csv', index_col=0)
         df_1m = pd.read_csv(os.path.abspath('.') + '\\kline_1m\\' + coinname + '_1m.csv')
         df_1m.dropna(subset=['date'],inplace=True)
         df_1m['ddate']=None
         df_1m['dvol']=0
+        df_1m['ma60']=0
         df_1m['ma91']=0
         df_1m['dc20up']=0
         df_1m['dc20dn']=0
@@ -36,6 +42,7 @@ class Kline(Base):
                 # print('需要修改该列')
                 df_1m.loc[(df_1m['timechuo'] >= timechuo_start) & (df_1m['timechuo'] < timechuo_end),('ddate')]=date_1d
                 df_1m.loc[(df_1m['timechuo'] >= timechuo_start) & (df_1m['timechuo'] < timechuo_end),('dvol')]=df_1d.loc[i, 'vol']
+                df_1m.loc[(df_1m['timechuo'] >= timechuo_start) & (df_1m['timechuo'] < timechuo_end),('ma60')]=df_1d.loc[i, 'ma60']
                 df_1m.loc[(df_1m['timechuo'] >= timechuo_start) & (df_1m['timechuo'] < timechuo_end),('ma91')]=df_1d.loc[i, 'ma91']
                 df_1m.loc[(df_1m['timechuo'] >= timechuo_start) & (df_1m['timechuo'] < timechuo_end),('dc20up')]=df_1d.loc[i, 'dc20up']
                 df_1m.loc[(df_1m['timechuo'] >= timechuo_start) & (df_1m['timechuo'] < timechuo_end),('dc20dn')]=df_1d.loc[i, 'dc20dn']
@@ -88,9 +95,18 @@ class Kline(Base):
             df.loc[i, 'dc10dn'] = round(df.loc[i - 10:i, 'low'].min(), 4)
         df.to_csv(path, encoding="utf-8")
         print(path + '增加dc成功')
+    def kline_ma60(self,path):
+        df = pd.read_csv(path, index_col=0)
+        df['ma60'] = 0
+        for i in range(len(df)):
+            date = df.loc[i, 'date']
+            df.loc[i, 'ma60'] = round(df.loc[i - 59:i, 'close'].mean(), 4)
+            if i < 60:
+                df.loc[i, 'ma60'] = 0
+        df.to_csv(path, encoding="utf-8")
+        print(path + '增加ma60成功')
     def kline_ma91(self,path):
         df = pd.read_csv(path)
-        # 计算ma91
         df['ma91'] = 0
         for i in range(len(df)):
             date = df.loc[i, 'date']
@@ -113,17 +129,18 @@ class Kline(Base):
                     self.txt_write('debuykline'+coinname,'结束维护,'+df_1m.loc[i, 'date'])
     #分钟线：合并
     def kline_merge(self,coinname):
-        path = os.path.abspath('.') + '\\kline\\' + coinname + '\\'
+        path = os.path.abspath('.') + '\\klinebase\\' + coinname + '1m\\'
         list_csv = os.listdir(path)
         for i in range(len(list_csv)):
             csv = list_csv[i]
-            print('i=' + str(i) + '   ' + csv)
-            if i == 0:
-                df = pd.read_csv(path + csv, index_col=0)
-            else:
-                df = df.append(pd.read_csv(path + csv, index_col=0))
+            if int(str(csv)[:10])>1536883200:
+                print('i=' + str(i) + '   ' + csv)
+                if i==131:
+                    df = pd.read_csv(path + csv, index_col=0)
+                else:
+                    df = df.append(pd.read_csv(path + csv, index_col=0))
         df.drop_duplicates(keep='last', inplace=True)
-        df.to_csv(coinname + '.csv', encoding="utf-8")
+        df.to_csv(coinname + '1m.csv', encoding="utf-8")
         print(coinname + '合并完成')
     #采集k线初始数据
     def kline_to_df(self, list_kline):
