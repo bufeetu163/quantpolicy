@@ -98,7 +98,7 @@ def main():
     robot.kline_daytomin('eos')
     robot.kline_daytomin('ltc')
     robot.kline_daytomin('etc')
-    os.system('shutdown -s -f -t 59')
+    # os.system('shutdown -s -f -t 59')
 
 
 
