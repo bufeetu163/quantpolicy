@@ -34,11 +34,8 @@ class HuobiDM:
         self.__access_key = access_key
         self.__secret_key = secret_key
 
-    def order_piliang(self, coinname, price_start, jiange, times, volume, direction, offset, jingdu=3,lever_rate=10):
-        if str(coinname).lower()=='btc':
-            jingdu=2
-
-
+    def order_piliang(self, coinname, price_start, jiange, times, volume, direction, offset,lever_rate=10):
+        jingdu=self.get_jingdu(coinname)
         i = 1
         while i <= times:
             if offset=='open':
@@ -208,27 +205,20 @@ class HuobiDM:
     #     request_path = '/api/v1/contract_position_info'
     #     return api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
     # 合约下单
-    def send_contrac999t_order(self, symbol, contract_type, contract_code,
-                            client_order_id, price,volume,direction,offset,
-                            lever_rate,order_price_type):
-        params = {"price": price,
-                  "volume": volume,
-                  "direction": direction,
-                  "offset": offset,
-                  "lever_rate": lever_rate,
-                  "order_price_type": order_price_type}
-        if symbol:
-            params["symbol"] = symbol
-        if contract_type:
-            params['contract_type'] = contract_type
-        if contract_code:
-            params['contract_code'] = contract_code
-        if client_order_id:
-            params['client_order_id'] = client_order_id
 
-        request_path = '/api/v1/contract_order'
-        return self.api_key_post(self.__url, request_path, params, self.__access_key, self.__secret_key)
-
+    def get_jingdu(self,coinname):
+        coinname=str(coinname).lower()
+        if coinname=='btc':
+            jingdu=2
+        elif coinname=='link' or coinname=='xrp':
+            jingdu = 4
+        elif coinname=='trx':
+            jingdu = 5
+        elif coinname=='ada':
+            jingdu = 6
+        else:
+            jingdu=3
+        return jingdu
     def send_contract_order(self, symbol, price, volume, direction, offset,lever_rate):
         params = {
             'contract_type': "next_quarter",

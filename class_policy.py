@@ -14,86 +14,51 @@ import pandas as pd
 from class_base import Base
 import numpy as np
 #注释完毕
-class Model(Base):
+class Policy(Base):
+    #获取精度
     def get_jingdu(self,coinname):
         coinname=str(coinname).lower()
         if coinname=='btc':
-            return 2
-        elif coinname=='xrp':
-            return 4
+            jingdu=2
+        elif coinname=='link' or coinname=='xrp':
+            jingdu = 4
         elif coinname=='trx':
-            return 5
+            jingdu = 5
+        elif coinname=='ada':
+            jingdu = 6
         else:
-            return 3
+            jingdu=3
+        return jingdu
+    #获取面值
     def get_mianzhi(self,coinname):
         if str(coinname).lower()=='btc':
             return 100
         else:
             return 10
+    #计算未结算收益
     def get_unsettled(self, price_aver, price, zhangshu, mianzhi, isduo):
         if zhangshu == 0 or price_aver == 0:
             return 0
         unsettled = round((1 / price_aver - 1 / price) * zhangshu * mianzhi, 4)
-        fee_open = round(int(zhangshu) * mianzhi / price_aver * 0.03 * 0.01, 8)  # 开仓手续费
-        fee_close = round(int(zhangshu) * mianzhi / price * 0.03 * 0.01, 8)  # 平仓手续费
-        fee_close=0
-        fee_open=0
         if isduo == True:
-            return round(unsettled - fee_open - fee_close, 8)
+            return round(unsettled, 8)
         else:
-            return round(0 - unsettled - fee_open - fee_close, 8)
+            return round(0 - unsettled, 8)
+    #计算手续费
     def get_fee(self, price, zhangshu, mianzhi):
         if zhangshu == 0 or price == 0:
             return 0
         fee = round(int(zhangshu) * mianzhi / price * 0.03 * 0.01, 8)  # 开仓手续费
         return fee
-    def get_ma_direction(self,ma,list_ma=[]):
-        #计算ma方向 取前三天ma平均值 和昨天ma比较
-        if len(list_ma)<60*24*3.1:
-            return False
-        else:
-            ma_aver=np.mean(list_ma)
-            if ma>ma_aver:
-                return 'duo'
-                pass
-            else:
-                return 'kong'
-    def get_direction(self,price,ma,dc20up,dc20dn,list_ma=[]):
-        if len(list_ma)<60*24*3.1:
-            return False
-        else:
-            if price > dc20dn and price < dc20up:
-                return 'sleep'
-            else:
-                if price > ma:
-                    if ma > np.mean(list_ma):
-                        # 价格高于ma 且ma向上走
-                        direction = 'duo'
-                    else:
-                        # 价格高于ma 且ma向下走
-                        direction = 'kong'
-                else:
-                    if ma < np.mean(list_ma):
-                        # 价格低于ma 且方向向下走
-                        direction = 'kong'
-                    else:
-                        # 价格低于ma 且方向向上走
-                        direction = 'duo'
-        #判断是否休眠
-        if price>dc20up or price<dc20dn:
-            return direction
-        else:
-            return 'sleep'
-
+    #网格写出到csv文件
     def wg_tocsv(self,title,timechuo,price,lun_rate_shouyi,list_wg=[]):
         name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','date']
         df = pd.DataFrame(columns=name, data=list_wg)  # 数据有三列，列名分别为one,two,three
         datem = self.timechuo_todate(timechuo)
-
         m =title+ '收益率' + str(lun_rate_shouyi)+ '价格' + str(price)
         title=os.getcwd() + '\\'+str(timechuo)+ m+ '.csv'
         df.to_csv(title, encoding='gbk',index=None)
-
+    #绘制数据图
     def chart(self, title, list1=[], list2=[], list3=[], list4=[]):
         # 横坐标
         listx = []
@@ -101,7 +66,6 @@ class Model(Base):
             listx.append(i + 1)
         plt.rcParams['font.sans-serif'] = ['SimHei']
         plt.rcParams['axes.unicode_minus'] = False
-
         liney1 = plt.plot(listx, list1)
         plt.setp(liney1, color='r')
         if len(list2)>0:
@@ -116,6 +80,7 @@ class Model(Base):
         plt.title(title)
         plt.savefig(os.getcwd() + '/' + title + '.png')
         plt.close()
+    #计算保证金率
     def get_rate_margin(self, price, zhangshu, quanyi, mianzhi):
         # 持仓担保资产 = (合约面值 * 持仓合约数量) / 最新成交价 / 倍数；
         # 担保资产率 = (账户权益 / 占用担保资产) * 100 % – 调整系数
@@ -125,10 +90,12 @@ class Model(Base):
             margin = (mianzhi * zhangshu) / price / 10
             rate_margin=round(quanyi / margin * 100 - 12, 2)
             return rate_margin
-    def get_nianhua(self, rate_shouyi,time_start, timechuo_end):
+    #计算年化率
+    def get_rate_nianhua(self, rate_shouyi,time_start, timechuo_end):
         day = (int(timechuo_end) - int(time_start)) / 86400
         nianhua = float(rate_shouyi) * 365 / day
         return round(nianhua, 2)
+    #计算胜率和盈亏比
     def get_shenglv_yingkui(self,list_rate_shouyi_close={}):
         num_close = len(list_rate_shouyi_close)
         num_ying = 0
@@ -147,7 +114,7 @@ class Model(Base):
         shenglv=num_ying/num_close
         yingkui = (sum_ying / num_ying) / (sum_kui / num_kui)
         return [round(shenglv,2),round(abs(yingkui),2)]
-
+    #计算最大回撤率
     def get_huiche_max(self, list_rate_shouyi=[]):
         length = len(list_rate_shouyi)
         huiche_max = 0
@@ -163,3 +130,19 @@ class Model(Base):
                 huiche = abs(rate_shouyi - rate_shouyi_max) / (100 + rate_shouyi_max)
                 huiche_max = max(huiche_max, huiche)
         return round(huiche_max * 100, 4)
+    #根据均线和ma获取趋势方向
+    def get_direction_by_ma60_ma91(self,price,ma60,ma91):
+        if price>ma60>ma91:#正在上涨
+            return 'duo'
+        elif ma60>price>ma91:#上涨回调
+            return 'duo'
+        elif ma60>ma91>price:#急速回调,不一定涨
+            return 'sleep'
+        elif ma91>ma60>price:#正在下跌
+            return 'kong'
+        elif ma91>price>ma60:#下跌回调,定继续跌
+            return 'kong'
+        elif price>ma91>ma60:#急速拉高,定继续跌
+            return 'kong'
+        else:
+            return 'sleep'

@@ -9,11 +9,10 @@ import pymysql
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from class_model import Model
 #注释完毕
 
 
-class Policyshunshiwg(Model):
+class Policyshunshiwg():
     def __init__(self):
         self.dict_param={}
         self.dict_record={}

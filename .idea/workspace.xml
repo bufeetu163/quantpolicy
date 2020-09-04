@@ -3,7 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="9df225d0-b3af-4d8b-892c-889d5789a0b5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HuobiDMService.py" beforeDir="false" afterPath="$PROJECT_DIR$/HuobiDMService.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_policyshunshiwg.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policyshunshiwg.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_policywgjunxian.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policywgma60ma91.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +95,8 @@
       <workItem from="1598941804383" duration="3602000" />
       <workItem from="1599032000119" duration="7628000" />
       <workItem from="1599118394427" duration="7070000" />
-      <workItem from="1599189758493" duration="12000" />
+      <workItem from="1599189758493" duration="363000" />
+      <workItem from="1599200441271" duration="7943000" />
     </task>
     <servers />
   </component>
@@ -99,38 +104,38 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1333" height="241" key="GridCell.Tab.0.bottom" timestamp="1599184387743">
+    <state width="1876" height="389" key="GridCell.Tab.0.bottom" timestamp="1599208854595">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="241" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599184387743" />
-    <state width="1333" height="241" key="GridCell.Tab.0.center" timestamp="1599184387743">
+    <state width="1876" height="389" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854595" />
+    <state width="1876" height="389" key="GridCell.Tab.0.center" timestamp="1599208854595">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="241" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599184387743" />
-    <state width="1333" height="241" key="GridCell.Tab.0.left" timestamp="1599184387743">
+    <state width="1876" height="389" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854595" />
+    <state width="1876" height="389" key="GridCell.Tab.0.left" timestamp="1599208854595">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="241" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599184387743" />
-    <state width="1333" height="241" key="GridCell.Tab.0.right" timestamp="1599184387743">
+    <state width="1876" height="389" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854595" />
+    <state width="1876" height="389" key="GridCell.Tab.0.right" timestamp="1599208854595">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="241" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599184387743" />
-    <state width="1876" height="389" key="GridCell.Tab.1.bottom" timestamp="1599110430779">
+    <state width="1876" height="389" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854595" />
+    <state width="1876" height="389" key="GridCell.Tab.1.bottom" timestamp="1599208854596">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="389" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599110430779" />
-    <state width="1876" height="389" key="GridCell.Tab.1.center" timestamp="1599110430778">
+    <state width="1876" height="389" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854596" />
+    <state width="1876" height="389" key="GridCell.Tab.1.center" timestamp="1599208854595">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="389" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599110430778" />
-    <state width="1876" height="389" key="GridCell.Tab.1.left" timestamp="1599110430778">
+    <state width="1876" height="389" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854595" />
+    <state width="1876" height="389" key="GridCell.Tab.1.left" timestamp="1599208854595">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="389" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599110430778" />
-    <state width="1876" height="389" key="GridCell.Tab.1.right" timestamp="1599110430779">
+    <state width="1876" height="389" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854595" />
+    <state width="1876" height="389" key="GridCell.Tab.1.right" timestamp="1599208854596">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="389" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599110430779" />
+    <state width="1876" height="389" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599208854596" />
     <state x="463" y="144" key="SettingsEditor" timestamp="1597712556947">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -139,52 +144,47 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="639" y="109" width="647" height="807" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1598425986100" />
-    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1599011292965">
+    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1599202849819">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599011292965" />
+    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599202849819" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>154</line>
+          <line>153</line>
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>274</line>
+          <line>273</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>270</line>
+          <line>269</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/class_model.py</url>
-          <line>93</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>176</line>
+          <line>175</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>241</line>
+          <line>240</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>91</line>
+          <line>90</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyshunshiwg.py</url>
-          <line>92</line>
+          <line>91</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -192,10 +192,25 @@
           <line>5</line>
           <option name="timeStamp" value="36" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/class_policywgma60ma91.py</url>
+          <line>239</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/class_policywgma60ma91.py</url>
+          <line>246</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/class_policywgma60ma91.py</url>
+          <line>245</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1599178775971" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1599208673061" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

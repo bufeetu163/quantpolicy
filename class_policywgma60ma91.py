@@ -9,17 +9,12 @@ import pymysql
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from class_model import Model
+from class_policy import Policy
 #注释完毕
 
 
-class Policywgjunxian(Model):
-    def __init__(self):
-        self.dict_param={}
-        self.dict_record={}
-        self.dict_acc={}
-        self.dict_data={}
-        self.list_ma91=[]
+class Policywgma60ma91(Policy):
+
     def zongjie(self,quanyi,price,money,fee_sum,date_start,date_end,huiche_max):
         # 资产 净利润 手续费  年化率 最大回撤 胜率 盈亏比
         # 持仓率 最低保证金率 连续盈利 连续亏损  结单次数 平均每次结单收益
@@ -229,29 +224,43 @@ class Policywgjunxian(Model):
         self.dict_acc['money'] = 0
         self.dict_record['price_start'] = price
         self.dict_record['quanyi_start'] = quanyi
-        self.dict_record['fund_start'] =price*quanyi
+        self.dict_record['fund_start'] =round(price*quanyi,2)
         self.log('系统:购买成功.得到权益' + str(quanyi)+'初始价格'+str(self.dict_record['price_start'])+'初始权益'+str(self.dict_record['quanyi_start']))
     #调用交易函数 买入 创建 开仓 止盈止损  记录 手续费 卖币
-    def run(self,open,high,low,close,atr,ma,timechuo,mianzhi,direction):
-        if self.dict_acc['quanyi'] == 0:
+    def run(self):
+        open=self.dict_data['open']
+        high=self.dict_data['high']
+        low=self.dict_data['low']
+        close=self.dict_data['close']
+        atr=self.dict_data['atr']
+        ma60=self.dict_data['ma60']
+        ma91=self.dict_data['ma91']
+        timechuo=self.dict_data['timechuo']
+        direction=self.dict_data['direction']
+        mianzhi=self.dict_param['mianzhi']
+
+
+        quanyi=self.dict_acc['quanyi']
+        if quanyi== 0:
             self.buy(close)
             return
         else:
             if self.list_wg==[]:
-                self.creat(close,self.dict_acc['quanyi'],atr,mianzhi,self.dict_data['direction'])
+                self.creat(close,quanyi,atr,mianzhi,direction)
                 self.txt_remove('创建网格成功')
             else:
-                #1处理等待中的网格
+                #1开单
                 if len(self.list_wg)>1:
                     self.ing(high,low)
                     self.wait(high,low)
-                #2处理已成交订单,更新权益 本轮张数
+                #2更新权益 本轮张数
                 res=self.ok(close,mianzhi)
                 self.dict_acc['quanyi'] = round(self.dict_acc['lun_quanyi_start'] + res['shouyi_sum'], 8)
+                quanyi = self.dict_acc['quanyi']
                 self.dict_acc['lun_zhangshu_sum'] = res['zhangshu_sum']
                 #3更新本轮收益率
-                fund = round(close * self.dict_acc['quanyi'], 4)
-                self.dict_acc['lun_rate_shouyi'] = round(fund / self.dict_acc['lun_fund_start'] * 100 - 100, 2)
+                fund = round(close * quanyi, 4)
+                self.dict_acc['lun_rate_shouyi'] = round(fund /self.dict_acc['lun_fund_start']* 100 - 100, 2)
                 if self.dict_acc['lun_rate_shouyi'] > self.dict_acc['lun_rate_shouyi_max']:
                     self.dict_acc['lun_rate_shouyi_max'] = self.dict_acc['lun_rate_shouyi']
                     self.log('恭喜,本轮收益率达到' + str(self.dict_acc['lun_rate_shouyi']))
@@ -285,13 +294,12 @@ class Policywgjunxian(Model):
                     self.log('                                                ')
                     self.log('                                                ')
                     self.log('                                                ')
-    #初始化容器 遍历指定区间k线,调用run
-    def start(self,coinname,date_start,date_end,param={}):
-        self.coinname=str(coinname).lower()
+    def init(self,coinname,param={}):
+        self.coinname = str(coinname).lower()
         self.txt_remove(self.coinname + '.txt')
         # 1全局参数
-        param['jingdu']=self.get_jingdu(coinname)
-        param['mianzhi']=self.get_mianzhi(coinname)
+        param['jingdu'] = self.get_jingdu(coinname)
+        param['mianzhi'] = self.get_mianzhi(coinname)
         self.dict_param = param
         # 2记录容器
         self.dict_record = {
@@ -308,11 +316,11 @@ class Policywgjunxian(Model):
             'list_rate_huiche': [],
             'list_rate_shouyi_close': [],
         }
-        #3.账户容器
+        # 3.账户容器
         self.dict_acc = {
             'quanyi': 0,
             'money': 10000,
-            'lun_direction':'',
+            'lun_direction': '',
             'lun_price_start': 0,
             'lun_quanyi_start': 0,
             'lun_fund_start': 0,
@@ -333,54 +341,45 @@ class Policywgjunxian(Model):
         }
         self.list_wg = []
         print('初始化完成')
+    #初始化容器 遍历指定区间k线,调用run
+    def start(self,coinname,date_start,date_end,param={}):
+        self.init(coinname,param)
         # 遍历数据
-        # 读取历史数据
         df_1m = pd.read_csv(os.path.abspath('.') + '\\klineok\\' + coinname + '1m1dok.csv', index_col=0).reset_index()
         for i in range(len(df_1m)):
-            date= df_1m.loc[i, 'date']
-            timechuo= int(df_1m.loc[i, 'timechuo'])
-            open= float(df_1m.loc[i, 'open'])
-            high= float(df_1m.loc[i, 'high'])
-            low= float(df_1m.loc[i, 'low'])
+            timechuo=int(df_1m.loc[i, 'timechuo'])
             close= float(df_1m.loc[i, 'close'])
-            ddate= df_1m.loc[i, 'ddate']
-            dvol= float(df_1m.loc[i, 'dvol'])
+            ma60= float(df_1m.loc[i, 'ma60'])
             ma91= float(df_1m.loc[i, 'ma91'])
-            dc20up= float(df_1m.loc[i, 'dc20up'])
-            dc20dn= float(df_1m.loc[i, 'dc20dn'])
-            dc10up= float(df_1m.loc[i, 'dc10up'])
-            dc10dn= float(df_1m.loc[i, 'dc10dn'])
-            atr= float(df_1m.loc[i, 'atr'])
-            self.list_ma91.append(ma91)
             self.dict_data = {
-                'date': date,
-                'timechuo': timechuo,
-                'open': open,
-                'high': high,
-                'low': low,
-                'close': close,
-                'ddate': ddate,
-                'dvol': dvol,
-                'ma91': ma91,
-                'dc20up': dc20up,
-                'dc20dn': dc20dn,
-                'dc10up': dc10up,
-                'dc10dn': dc10dn,
-                'atr': atr,
-                'direction':self.get_direction(close,ma91,dc20up,dc20dn,self.list_ma91)
+                'date': df_1m.loc[i, 'date'],
+                'timechuo': int(df_1m.loc[i, 'timechuo']),
+                'open': float(df_1m.loc[i, 'open']),
+                'high': float(df_1m.loc[i, 'high']),
+                'low': float(df_1m.loc[i, 'low']),
+                'close': float(df_1m.loc[i, 'close']),
+                'ddate': df_1m.loc[i, 'ddate'],
+                'dvol':float(df_1m.loc[i, 'dvol']),
+                'ma60': float(df_1m.loc[i, 'ma60']),
+                'ma91': float(df_1m.loc[i, 'ma91']),
+                'dc20up':float(df_1m.loc[i, 'dc20up']),
+                'dc20dn': float(df_1m.loc[i, 'dc20dn']),
+                'dc10up': float(df_1m.loc[i, 'dc10up']),
+                'dc10dn':float(df_1m.loc[i, 'dc10dn']),
+                'atr':float(df_1m.loc[i, 'atr']),
+                'direction':self.get_direction_by_ma60_ma91(close,ma60,ma91)
             }
-            if self.dict_data['timechuo'] > self.date_totimechuo(date_start) and self.dict_data[
-                'timechuo'] < self.date_totimechuo(date_end) and self.dict_data['direction']!=False:
-                self.run(open,high,low,close,atr,ma91,timechuo,self.dict_param['mianzhi'],self.dict_data['direction'])
-            elif self.dict_data['timechuo'] > self.date_totimechuo(date_end):
+            if timechuo > self.date_totimechuo(date_start) and timechuo< self.date_totimechuo(date_end):
+                self.run()
+            elif timechuo > self.date_totimechuo(date_end):
                 break
-        self.zongjie(quanyi=self.dict_acc['quanyi'],
-                     price=self.dict_data['close'],
-                     money=self.dict_acc['money'],
-                     fee_sum=self.dict_record['fee_sum'],
-                     date_start=date_start,
-                     date_end=date_end,
-                     huiche_max=max(self.dict_record['list_rate_huiche']))
+        # self.zongjie(quanyi=self.dict_acc['quanyi'],
+        #              price=self.dict_data['close'],
+        #              money=self.dict_acc['money'],
+        #              fee_sum=self.dict_record['fee_sum'],
+        #              date_start=date_start,
+        #              date_end=date_end,
+        #              huiche_max=max(self.dict_record['list_rate_huiche']))
 
 
 
