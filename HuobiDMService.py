@@ -11,9 +11,7 @@ import json
 import urllib
 import datetime
 import requests
-# from HuobiDMUtil import http_get_request, api_key_post
 '''
-URL = 'https://api.btcgateway.pro'
 ACCESS_KEY = 'bb744223-32147a86-56597f7f-ez2xc4vb6n'
 SECRET_KEY = '8bc9bf60-64d68dfc-2cc3f4f7-b08de'
 dm = HuobiDM(URL, ACCESS_KEY, SECRET_KEY)
@@ -31,12 +29,16 @@ dm.order_piliang(
 '''
 class HuobiDM:
 
-    def __init__(self,url,access_key,secret_key):
-        self.__url = url
+    def __init__(self,access_key,secret_key):
+        self.__url = 'https://api.btcgateway.pro'
         self.__access_key = access_key
         self.__secret_key = secret_key
 
     def order_piliang(self, coinname, price_start, jiange, times, volume, direction, offset, jingdu=3,lever_rate=10):
+        if str(coinname).lower()=='btc':
+            jingdu=2
+
+
         i = 1
         while i <= times:
             if offset=='open':
@@ -59,7 +61,6 @@ class HuobiDM:
             res = self.send_contract_order(symbol=coinname, price=price, volume=volume, direction=direction,
                                            offset=offset,lever_rate=lever_rate)
             print(res)
-            time.sleep(1)
     # 获取合约信息
     # def get_contract_info(self, symbol='', contract_type='', contract_code=''):
     #     """
