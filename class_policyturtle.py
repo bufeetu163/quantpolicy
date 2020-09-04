@@ -19,7 +19,7 @@ from class_base import Base
 定义一个账户字典   空的list存储交易数据
 #
 '''
-class Turtle(Base):
+class Policyturtle(Base):
     def zongjie(self):
         #导出日志列表
         df = pd.DataFrame(self.log_list)
