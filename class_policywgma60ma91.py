@@ -351,7 +351,11 @@ class Policywgma60ma91(Policy):
     def start(self,coinname,date_start,date_end,param={}):
         self.init(coinname,param)
         # 遍历数据
-        df_1m = pd.read_csv(os.path.abspath('.') + '\\klineok\\' + coinname + '1m1dok.csv', index_col=0).reset_index()
+        # df_1m = pd.read_csv(os.path.abspath('.') + '\\klineok\\' + coinname + '1m1dok.csv', index_col=0).reset_index()
+        path=os.path.abspath('.') + '/klineok/' + coinname + '1m1dok.csv'
+        print(path)
+        df_1m = pd.read_csv(path, index_col=0).reset_index()
+
         for i in range(len(df_1m)):
             timechuo=int(df_1m.loc[i, 'timechuo'])
             close= float(df_1m.loc[i, 'close'])
