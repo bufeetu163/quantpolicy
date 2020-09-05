@@ -40,43 +40,39 @@ class Policywgma60ma91(Policy):
         self.log(m2)
     def log(self,content):
         self.txt_write(self.coinname,self.dict_data['date']+'----'+str(self.dict_data['close'])+'----'+content)
-    def sell(self,quanyi,price,fund_start):
-        coin= quanyi - (fund_start / price)
-        money = coin* price * 0.998
-        res={
-            'coin':coin,
-            'money':money,
-        }
-        return res
-    def close(self,price,mianzhi,direction,timechuo,atr):
+    def sell(self):
+        quanyi = self.dict_acc['quanyi']
+        price = self.dict_data['close']
+        fund_start = self.dict_record['fund_start']
+        if quanyi * price - self.dict_record['fund_start'] > 50:
+            coin = quanyi - (fund_start / price)
+            money=round(coin* price * 0.998,2)
+            self.dict_acc['quanyi'] -= coin
+            self.dict_acc['money'] += money
+            self.log('卖币成功,卖出数量' + str(coin )+ '得到钱' + str(money))
+    def close(self):
+        price = self.dict_data['price']
+        mianzhi = self.dict_param['mianzhi']
+        timechuo = self.dict_data['timechuo']
+        atr = self.dict_data['atr']
         lun_direction=self.dict_acc['lun_direction']
         lun_price_start=self.dict_acc['lun_price_start']
         lun_zhangshu_sum=self.dict_acc['lun_zhangshu_sum']
         lun_rate_shouyi_max=self.dict_acc['lun_rate_shouyi_max']
         lun_rate_shouyi=self.dict_acc['lun_rate_shouyi']
-        zhiying=self.dict_param['zhiying']
-        huiche=self.dict_param['huiche']
-        zhisun_atr=self.dict_param['zhisun_atr']
+        jiange=self.dict_param['jiange']
         todo=''
-        if lun_rate_shouyi_max>zhiying and lun_rate_shouyi<=lun_rate_shouyi_max*(1-huiche/100):
-            if lun_direction == 'kong':
-                todo = '止盈空'
-            elif lun_direction=='duo':
-                todo = '止盈多'
-        if lun_direction == 'kong' and price>lun_price_start+zhisun_atr*atr:
-            todo = '逆势止损空'
-        elif lun_direction == 'duo' and price<lun_price_start-zhisun_atr*atr:
-            todo = '逆势止损多'
-        elif lun_direction == 'kong' and lun_rate_shouyi<-3:
+        if lun_direction == 'kong' and price-self.dict_acc['lun_price_low']>self.dict_param['zhisun']*jiange*atr:
             todo = '止损空'
-        elif lun_direction == 'duo' and lun_rate_shouyi<-3:
+        elif lun_direction == 'duo' and self.dict_acc['lun_price_high']-price>self.dict_param['zhisun']*jiange*atr:
             todo = '止损多'
-        elif lun_direction=='sleep' and direction!='sleep':
+        elif lun_direction=='sleep' and self.dict_data['timechuo']>self.dict_acc['lun_timechuo_sleep']:
             todo = '解冻'
-        if todo == '止盈空' or todo == '止盈多' or todo == '止损空' or todo == '止损多' or todo == '解冻':
+        if todo == '止损空' or todo == '止损多' or todo == '解冻':
             #快照网格
             if todo!='解冻':
-                self.wg_tocsv(self.coinname + todo, timechuo, price, lun_rate_shouyi, self.list_wg)
+                self.dict_acc['lun_timechuo_sleep']=self.dict_data['timechuo']+86400*self.dict_param['sleep']
+            self.wg_tocsv(self.coinname + todo, timechuo, price, lun_rate_shouyi, self.list_wg)
             #清空网格
             self.list_wg.clear()
             #记录平仓收益率
@@ -88,7 +84,15 @@ class Policywgma60ma91(Policy):
             return fee_close
         else:
             return False
-    def uprecord(self,price,mianzhi,quanyi,money,fund_start,quanyi_start,price_start,lun_zhangshu_sum):
+    def record(self):
+        price = self.dict_data['price']
+        quanyi = self.dict_acc['quanyi']
+        money = self.dict_acc['money']
+        mianzhi = self.dict_param['mianzhi']
+        quanyi_start=self.dict_record['quanyi_start']
+        price_start=self.dict_record['price_start']
+        fund_start=self.dict_record['fund_start']
+        lun_zhangshu_sum=self.dict_acc['lun_zhangshu_sum']
         fund=price*quanyi
         #资金收益率
         rate_shouyi_fund = round((fund+money) / fund_start * 100 - 100, 2)
@@ -114,10 +118,12 @@ class Policywgma60ma91(Policy):
         self.log(m1)
         self.log(m2)
         self.log(m3)
-    def ok(self,price,mianzhi):
+    def ok(self):
+        price = self.dict_data['close']
+        mianzhi = self.dict_param['mianzhi']
         #遍历网格,更新单个收益,累计总收益,更新权益
-        shouyi_sum = 0
-        zhangshu_sum=0
+        lun_shouyi_sum = 0
+        lun_zhangshu_sum=0
         for i in range(len(self.list_wg)):
             wg = self.list_wg[i]
             price_wg = wg['price_wg']
@@ -133,31 +139,16 @@ class Policywgma60ma91(Policy):
                 self.list_wg[i]['shouyi'] = round(shouyi,2)
                 self.list_wg[i]['rate_shouyi'] = round(rate_shouyi,2)
                 self.list_wg[i]['rate_shouyi_max'] = max(self.list_wg[i]['rate_shouyi_max'],rate_shouyi)
-                shouyi_sum += shouyi
-                zhangshu_sum += zhangshu_wg
-
+                lun_shouyi_sum += shouyi
+                lun_zhangshu_sum += zhangshu_wg
         res={
-            'shouyi_sum':shouyi_sum,
-            'zhangshu_sum':zhangshu_sum,
+            'lun_shouyi_sum':lun_shouyi_sum,
+            'lun_zhangshu_sum':lun_zhangshu_sum,
         }
         return res
-    def ing(self,high,low):
-        # 遍历网格,如果duo_ing  价格跌破就成交   waitkong 涨破就成交
-        istradeok=False
-        for i in range(len(self.list_wg)):
-            wg = self.list_wg[i]
-            if wg['status'] == 'duo_ing' and low < wg['price_wg']:
-                self.list_wg[i]['status'] = 'duo_ok'
-                self.list_wg[i]['date'] = self.dict_data['date']
-                self.log('开多成功,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
-                istradeok = True
-            elif wg['status'] == 'kong_ing' and high > wg['price_wg']:
-                self.list_wg[i]['status'] = 'kong_ok'
-                self.list_wg[i]['date'] = self.dict_data['date']
-                self.log('开空成功,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
-                istradeok = True
-        return istradeok
-    def wait(self,high,low):
+    def wait(self):
+        high = self.dict_data['high']
+        low = self.dict_data['low']
         #遍历网格,如果waitduo  价格超过,就委托   waitkong 跌破就委托
         for i in range(len(self.list_wg)):
             wg = self.list_wg[i]
@@ -167,14 +158,36 @@ class Policywgma60ma91(Policy):
             if wg['status']=='kong_wait' and low<wg['price_wg']:
                 self.list_wg[i]['status'] = 'kong_ing'
                 # self.log('委托开空,委托价'+str(wg['price_wg'])+'委托张数'+str(wg['zhangshu_wg']))
-        return
+    def ing(self):
+        high = self.dict_data['high']
+        low = self.dict_data['low']
+        # 遍历网格,如果duo_ing  价格跌破就成交   waitkong 涨破就成交
+        for i in range(len(self.list_wg)):
+            wg = self.list_wg[i]
+            if wg['status'] == 'duo_ing' and low < wg['price_wg']:
+                self.list_wg[i]['status'] = 'duo_ok'
+                self.list_wg[i]['date'] = self.dict_data['date']
+                self.dict_acc['lun_price_high'] =max(self.dict_acc['lun_price_high'],wg['price_wg'])
+                self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'],wg['price_wg'])
+                self.log('开多成功,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
+            elif wg['status'] == 'kong_ing' and high > wg['price_wg']:
+                self.list_wg[i]['status'] = 'kong_ok'
+                self.list_wg[i]['date'] = self.dict_data['date']
+                self.dict_acc['lun_price_high'] = max(self.dict_acc['lun_price_high'], wg['price_wg'])
+                self.dict_acc['lun_price_low'] = min(self.dict_acc['lun_price_low'], wg['price_wg'])
+                self.log('开空成功,成交价' + str(wg['price_wg']) + '成交张数' + str(wg['zhangshu_wg']))
     #创建网格
-    def creat(self,price,quanyi,atr,mianzhi,direction):
+    def creat(self):
+        price = self.dict_data['close']
+        atr = self.dict_data['atr']
+        mianzhi = self.dict_param['mianzhi']
+        direction = self.dict_data['direction']
+        quanyi = self.dict_acc['quanyi']
         #准备参数
         self.list_wg = []
         zhangshu_chong=int(price*quanyi/mianzhi)
-        zhangshu_base = max(int(self.dict_param['zhangshu_base']*zhangshu_chong),1)
-        jiange_wg = round(atr * self.dict_param['jiange_atr'],2)
+        zhangshu_base = max(int(self.dict_param['zhangshu']*zhangshu_chong),1)
+        jiange_wg = round(atr * self.dict_param['jiange'],2)
         status = ''
         zhangshu_wg=0
         geshu = 20
@@ -184,13 +197,13 @@ class Policywgma60ma91(Policy):
             if direction == 'duo':
                 status='duo_wait'
                 if price_wg>price:
-                    zhangshu_wg=zhangshu_base*2
+                    zhangshu_wg=zhangshu_base
                 else:
                     zhangshu_wg=zhangshu_base
             elif direction == 'kong':
                 status = 'kong_wait'
                 if price_wg<price:
-                    zhangshu_wg=zhangshu_base*2
+                    zhangshu_wg=zhangshu_base
                 else:
                     zhangshu_wg=zhangshu_base
             dict_wg = {
@@ -216,6 +229,8 @@ class Policywgma60ma91(Policy):
         self.dict_acc['lun_rate_shouyi'] = 0
         self.dict_acc['lun_rate_shouyi_max'] = 0
         self.dict_acc['lun_zhangshu_sum'] = zhangshu_chong
+        self.dict_acc['lun_price_high'] = price
+        self.dict_acc['lun_price_low'] = price
         self.log('账户='+str(self.dict_acc))
         self.log('创建网格完成,总格数'+str(len(self.list_wg))+'间隔'+str(jiange_wg)+'方向'+str(direction)+'初始资产'+str(quanyi*price))
     def buy(self,price):
@@ -238,45 +253,35 @@ class Policywgma60ma91(Policy):
         timechuo=self.dict_data['timechuo']
         direction=self.dict_data['direction']
         mianzhi=self.dict_param['mianzhi']
-
-
         quanyi=self.dict_acc['quanyi']
         if quanyi== 0:
             self.buy(close)
             return
         else:
             if self.list_wg==[]:
-                self.creat(close,quanyi,atr,mianzhi,direction)
+                self.creat()
                 self.txt_remove('创建网格成功')
             else:
                 #1开单
                 if len(self.list_wg)>1:
-                    self.ing(high,low)
-                    self.wait(high,low)
+                    self.ing()
+                    self.wait()
                 #2更新权益 本轮张数
-                res=self.ok(close,mianzhi)
-                self.dict_acc['quanyi'] = round(self.dict_acc['lun_quanyi_start'] + res['shouyi_sum'], 8)
+                res=self.ok()
+                self.dict_acc['quanyi'] = round(self.dict_acc['lun_quanyi_start'] + res['lun_shouyi_sum'], 8)
                 quanyi = self.dict_acc['quanyi']
-                self.dict_acc['lun_zhangshu_sum'] = res['zhangshu_sum']
+                self.dict_acc['lun_zhangshu_sum'] = res['lun_zhangshu_sum']
                 #3更新本轮收益率
-                fund = round(close * quanyi, 4)
-                self.dict_acc['lun_rate_shouyi'] = round(fund /self.dict_acc['lun_fund_start']* 100 - 100, 2)
+                self.dict_acc['lun_rate_shouyi'] = round(close * quanyi /self.dict_acc['lun_fund_start']* 100 - 100, 2)
                 if self.dict_acc['lun_rate_shouyi'] > self.dict_acc['lun_rate_shouyi_max']:
                     self.dict_acc['lun_rate_shouyi_max'] = self.dict_acc['lun_rate_shouyi']
                     self.log('恭喜,本轮收益率达到' + str(self.dict_acc['lun_rate_shouyi']))
                 #4记录数据
                 if timechuo>self.dict_record['timechuo_record']:
                     self.dict_record['timechuo_record'] = timechuo + 3600 * 24
-                    self.uprecord(close,
-                                  mianzhi,
-                                  self.dict_acc['quanyi'],
-                                  self.dict_acc['money'],
-                                  self.dict_record['fund_start'],
-                                  self.dict_record['quanyi_start'],
-                                  self.dict_record['price_start'],
-                                  self.dict_acc['lun_zhangshu_sum'])
+                    self.record()
                 #5止盈止损
-                res=self.close(close,mianzhi,direction,timechuo,atr)
+                res=self.close()
                 #止盈止损成功后,扣除手续费
                 if res!=False and res>0:
                     fee_close=res
@@ -284,12 +289,7 @@ class Policywgma60ma91(Policy):
                     self.dict_acc['quanyi'] -= 2 * fee_close
                     self.dict_record['fee_sum'] += 2 * fee_close
                     self.log('扣手续费之后权益' + str(self.dict_acc['quanyi']))
-                    #止盈止损成功后,判断卖币
-                    if self.dict_acc['quanyi'] * close- self.dict_record['fund_start']>50:
-                        res=self.sell(self.dict_acc['quanyi'],close,self.dict_record['fund_start'])
-                        self.dict_acc['quanyi'] -= res['coin']
-                        self.dict_acc['money'] +=res['money']
-                        self.log('卖币成功,卖出数量' + str(res['coin']) + '得到钱' + str(res['money']))
+                    self.sell()
                     self.log('                                                ')
                     self.log('                                                ')
                     self.log('                                                ')
@@ -306,7 +306,7 @@ class Policywgma60ma91(Policy):
             'timechuo_record': 0,
             'price_start': 0,
             'quanyi_start': 0,
-            'fund_start': 0,
+            'fund_start': 10000,
             'fee_sum': 0,
             'list_rate_shouyi_coin': [],
             'list_rate_shouyi_fund': [],
@@ -327,6 +327,9 @@ class Policywgma60ma91(Policy):
             'lun_rate_shouyi': 0,
             'lun_rate_shouyi_max': 0,
             'lun_zhangshu_sum': 0,
+            'lun_price_high':0,
+            'lun_price_low':0,
+            'lun_timechuo_sleep':0,
         }
         # 4.数据容器
         self.dict_data = {
@@ -369,6 +372,9 @@ class Policywgma60ma91(Policy):
                 'atr':float(df_1m.loc[i, 'atr']),
                 'direction':self.get_direction_by_ma60_ma91(close,ma60,ma91)
             }
+            if self.dict_data['timechuo']<self.dict_acc['lun_timechuo_sleep']:
+                self.dict_data['direction']='sleep'
+
             if timechuo > self.date_totimechuo(date_start) and timechuo< self.date_totimechuo(date_end):
                 self.run()
             elif timechuo > self.date_totimechuo(date_end):

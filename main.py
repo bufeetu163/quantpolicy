@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 from calss_kline import Kline
 from class_base import Base
-from class_turtle import Turtle
 from class_policyshunshiwg import Policyshunshiwg
 from calss_kline import Kline
 import pdb
@@ -19,7 +18,7 @@ def main():
     param={
         'zhangshu':0.02,
         'jiange':0.2,
-        'zhisun':5,
+        'zhisun':5,#逆势多少格
         'sleep':5,
     }
     robot.start(
@@ -28,9 +27,7 @@ def main():
         date_end='2018-12-15 12:00',
         param=param
     )
-    # ACCESS_KEY = 'bb744223-32147a86-56597f7f-ez2xc4vb6n'
-    # SECRET_KEY = '8bc9bf60-64d68dfc-2cc3f4f7-b08de'
-    # dm = HuobiDM(ACCESS_KEY, SECRET_KEY)
+    # dm = HuobiDM('bb744223-32147a86-56597f7f-ez2xc4vb6n', '8bc9bf60-64d68dfc-2cc3f4f7-b08de')
     # dm.order_piliang(
     #     coinname='trx',
     #     price_start=0.043,
@@ -42,12 +39,12 @@ def main():
     # )
     # dm.order_piliang(
     #     coinname='eos',
-    #     price_start=2.7,
-    #     jiange=0.002,
-    #     times=200,
+    #     price_start=3.140,
+    #     jiange=0.003,
+    #     times=132,
     #     volume=1,
-    #     direction='sell',
-    #     offset='open',
+    #     direction='buy',
+    #     offset='close',
     # )
     # dm.order_piliang(
     #     coinname='link',
@@ -60,12 +57,12 @@ def main():
     # )
     # dm.order_piliang(
     #     coinname='btc',
-    #     price_start=10450,
-    #     jiange=10,
-    #     times=50,
+    #     price_start=10590,
+    #     jiange=5,
+    #     times=180,
     #     volume=1,
-    #     direction='sell',
-    #     offset='open',
+    #     direction='buy',
+    #     offset='close',
     # )
 
 if __name__ == '__main__':
