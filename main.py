@@ -16,9 +16,11 @@ from class_policywgma60ma91 import Policywgma60ma91
 def main():
     robot=Policywgma60ma91()
     param={
-        'zhangshu':0.02,
-        'jiange':0.2,
-        'zhisun':5,#逆势多少格
+        'zhangshu':0.02*2,
+        'jiange':0.3,
+        'zhiying':8,#止盈比例
+        'huiche':20,#回撤比例
+        'zhisun':8,#逆势多少格
         'sleep':5,
     }
     robot.start(

@@ -20,7 +20,7 @@ class Policywgma60ma91(Policy):
         # 持仓率 最低保证金率 连续盈利 连续亏损  结单次数 平均每次结单收益
         # 张数 间隔 止盈 止损
         fund=str(round(quanyi*price,2))
-        rate_nianhua = str(self.get_nianhua(self.dict_record['list_rate_shouyi_fund'][-1], self.date_totimechuo(date_start), self.date_totimechuo(date_end)))
+        rate_nianhua = str(self.get_rate_nianhua(self.dict_record['list_rate_shouyi_fund'][-1], self.date_totimechuo(date_start), self.date_totimechuo(date_end)))
         res = self.get_shenglv_yingkui(self.dict_record['list_rate_shouyi_close'])
         rate_shenglv=str(res[0])
         rate_yingkui = str(res[1])
@@ -35,7 +35,7 @@ class Policywgma60ma91(Policy):
         self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max) + '胜率' + str(rate_shenglv) + '盈亏比' + str(rate_yingkui), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
         m1 = self.coinname + '|fund' + str(fund) + '|money' + str(money) + '|fee_sum' + str(fee_sum) + '|nianhua' + str(
             rate_nianhua) + '|最大回撤' + str(huiche_max) + '|胜率' + str(rate_shenglv) + '|盈亏比' + str(rate_yingkui)
-        m2 = '|最大持仓率' + str(rate_chicang) + '|最低保证金率' + str(rate_margin_min) + '|平仓次数' + str(times_shouyi) + '|预期收益' + str(aver_shouyi)
+        m2 = '|最大持仓率' + str(rate_chicang) + '|最低保证金率' + str(rate_margin_min) + '|平仓次数' + str(times_shouyi) + '|预期单次收益' + str(aver_shouyi)
         self.log(m1)
         self.log(m2)
     def log(self,content):
@@ -51,8 +51,8 @@ class Policywgma60ma91(Policy):
             self.dict_acc['money'] += money
             self.log('卖币成功,卖出数量' + str(coin )+ '得到钱' + str(money))
     def close(self):
-        price = self.dict_data['price']
-        mianzhi = self.dict_param['mianzhi']
+        price = self.dict_data['close']
+        mianzhi = self.mianzhi
         timechuo = self.dict_data['timechuo']
         atr = self.dict_data['atr']
         lun_direction=self.dict_acc['lun_direction']
@@ -62,13 +62,17 @@ class Policywgma60ma91(Policy):
         lun_rate_shouyi=self.dict_acc['lun_rate_shouyi']
         jiange=self.dict_param['jiange']
         todo=''
-        if lun_direction == 'kong' and price-self.dict_acc['lun_price_low']>self.dict_param['zhisun']*jiange*atr:
+        if lun_direction == 'kong' and lun_rate_shouyi_max>self.dict_param['zhiying'] and lun_rate_shouyi<lun_rate_shouyi_max*(1-self.dict_param['huiche']*0.01):
+            todo = '止盈空'
+        elif lun_direction == 'duo' and lun_rate_shouyi_max > self.dict_param['zhiying'] and lun_rate_shouyi < lun_rate_shouyi_max * (1 - self.dict_param['huiche'] * 0.01):
+            todo = '止盈多'
+        elif lun_direction == 'kong' and price-self.dict_acc['lun_price_low']>self.dict_param['zhisun']*jiange*atr:
             todo = '止损空'
         elif lun_direction == 'duo' and self.dict_acc['lun_price_high']-price>self.dict_param['zhisun']*jiange*atr:
             todo = '止损多'
         elif lun_direction=='sleep' and self.dict_data['timechuo']>self.dict_acc['lun_timechuo_sleep']:
             todo = '解冻'
-        if todo == '止损空' or todo == '止损多' or todo == '解冻':
+        if todo == '止盈空' or todo == '止盈多' or todo == '止损空' or todo == '止损多' or todo == '解冻':
             #快照网格
             if todo!='解冻':
                 self.dict_acc['lun_timechuo_sleep']=self.dict_data['timechuo']+86400*self.dict_param['sleep']
@@ -85,10 +89,10 @@ class Policywgma60ma91(Policy):
         else:
             return False
     def record(self):
-        price = self.dict_data['price']
+        price = self.dict_data['close']
         quanyi = self.dict_acc['quanyi']
         money = self.dict_acc['money']
-        mianzhi = self.dict_param['mianzhi']
+        mianzhi = self.mianzhi
         quanyi_start=self.dict_record['quanyi_start']
         price_start=self.dict_record['price_start']
         fund_start=self.dict_record['fund_start']
@@ -120,7 +124,7 @@ class Policywgma60ma91(Policy):
         self.log(m3)
     def ok(self):
         price = self.dict_data['close']
-        mianzhi = self.dict_param['mianzhi']
+        mianzhi = self.mianzhi
         #遍历网格,更新单个收益,累计总收益,更新权益
         lun_shouyi_sum = 0
         lun_zhangshu_sum=0
@@ -180,7 +184,7 @@ class Policywgma60ma91(Policy):
     def creat(self):
         price = self.dict_data['close']
         atr = self.dict_data['atr']
-        mianzhi = self.dict_param['mianzhi']
+        mianzhi = self.mianzhi
         direction = self.dict_data['direction']
         quanyi = self.dict_acc['quanyi']
         #准备参数
@@ -252,7 +256,7 @@ class Policywgma60ma91(Policy):
         ma91=self.dict_data['ma91']
         timechuo=self.dict_data['timechuo']
         direction=self.dict_data['direction']
-        mianzhi=self.dict_param['mianzhi']
+        mianzhi=self.mianzhi
         quanyi=self.dict_acc['quanyi']
         if quanyi== 0:
             self.buy(close)
@@ -298,8 +302,7 @@ class Policywgma60ma91(Policy):
         self.coinname = str(coinname).lower()
         self.txt_remove(self.coinname + '.txt')
         # 1全局参数
-        param['jingdu'] = self.get_jingdu(coinname)
-        param['mianzhi'] = self.get_mianzhi(coinname)
+        self.mianzhi=self.get_mianzhi(coinname)
         self.dict_param = param
         # 2记录容器
         self.dict_record = {
@@ -379,13 +382,13 @@ class Policywgma60ma91(Policy):
                 self.run()
             elif timechuo > self.date_totimechuo(date_end):
                 break
-        # self.zongjie(quanyi=self.dict_acc['quanyi'],
-        #              price=self.dict_data['close'],
-        #              money=self.dict_acc['money'],
-        #              fee_sum=self.dict_record['fee_sum'],
-        #              date_start=date_start,
-        #              date_end=date_end,
-        #              huiche_max=max(self.dict_record['list_rate_huiche']))
+        self.zongjie(quanyi=self.dict_acc['quanyi'],
+                     price=self.dict_data['close'],
+                     money=self.dict_acc['money'],
+                     fee_sum=self.dict_record['fee_sum'],
+                     date_start=date_start,
+                     date_end=date_end,
+                     huiche_max=max(self.dict_record['list_rate_huiche']))
 
 
 
