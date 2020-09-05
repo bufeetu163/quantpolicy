@@ -70,7 +70,7 @@ class Policywgma60ma91(Policy):
             todo = '止损空'
         elif lun_direction == 'duo' and self.dict_acc['lun_price_high']-price>self.dict_param['zhisun']*jiange*atr:
             todo = '止损多'
-        elif lun_direction=='sleep' and self.dict_data['timechuo']>self.dict_acc['lun_timechuo_sleep']:
+        elif lun_direction=='sleep' and self.dict_data['timechuo']>self.dict_acc['lun_timechuo_sleep'] and self.dict_data['direction']!='sleep':
             todo = '解冻'
         if todo == '止盈空' or todo == '止盈多' or todo == '止损空' or todo == '止损多' or todo == '解冻':
             #快照网格
