@@ -272,8 +272,8 @@ class Policyshunshiwg():
                     fee_close=res
                     self.log('扣手续费之前权益' + str(self.dict_acc['quanyi']))
                     self.dict_acc['quanyi'] -= 2 * fee_close
-                    self.dict_record['fee_sum'] += 2 * fee_close
                     self.log('扣手续费之后权益' + str(self.dict_acc['quanyi']))
+                    self.dict_record['fee_sum'] += 2 * fee_close * close
                     #止盈止损成功后,判断卖币
                     if self.dict_acc['quanyi'] * close- self.dict_record['fund_start']>50:
                         res=self.sell(self.dict_acc['quanyi'],close,self.dict_record['fund_start'])

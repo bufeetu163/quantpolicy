@@ -54,9 +54,9 @@ class Policy(Base):
     def wg_tocsv(self,title,timechuo,price,lun_rate_shouyi,list_wg=[]):
         name = ['id', 'price_wg', 'zhangshu_wg','status','shouyi','rate_shouyi','rate_shouyi_max','date']
         df = pd.DataFrame(columns=name, data=list_wg)  # 数据有三列，列名分别为one,two,three
-        datem = self.timechuo_todate(timechuo)
-        m =title+ '收益率' + str(lun_rate_shouyi)+ '价格' + str(price)
-        title=os.getcwd() + '\\'+str(timechuo)+ m+ '.csv'
+        order_no = str(time.strftime('%Y%m%d%H%M', time.localtime(timechuo)))
+        m =order_no+title+ '收益率' + str(lun_rate_shouyi)+ '价格' + str(price)
+        title=os.getcwd() + '\\'+ m+ '.csv'
         df.to_csv(title, encoding='gbk',index=None)
     #绘制数据图
     def chart(self, title, list1=[], list2=[], list3=[], list4=[]):

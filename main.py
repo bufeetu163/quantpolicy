@@ -23,15 +23,15 @@ def piliang():
     #     direction='sell',
     #     offset='open',
     # )
-    dm.order_piliang(
-        coinname='eos',
-        price_start=3.071,
-        jiange=0.002,
-        times=132,
-        volume=1,
-        direction='sell',
-        offset='open',
-    )
+    # dm.order_piliang(
+    #     coinname='eos',
+    #     price_start=3.071,
+    #     jiange=0.002,
+    #     times=132,
+    #     volume=1,
+    #     direction='sell',
+    #     offset='open',
+    # )
     # dm.order_piliang(
     #     coinname='link',
     #     price_start=11.9,
@@ -41,24 +41,35 @@ def piliang():
     #     direction='sell',
     #     offset='open',
     # )
-    # dm.order_piliang(
-    #     coinname='btc',
-    #     price_start=10590,
-    #     jiange=5,
-    #     times=180,
-    #     volume=1,
-    #     direction='buy',
-    #     offset='close',
-    # )
+    dm.order_piliang(
+        coinname='btc',
+        price_start=10450,
+        jiange=10,
+        times=30,
+        volume=1,
+        direction='sell',
+        offset='open',
+    )
+    dm.order_piliang(
+        coinname='btc',
+        price_start=10750,
+        jiange=10,
+        times=47,
+        volume=1,
+        direction='sell',
+        offset='close',
+    )
+
+
 def main():
     robot=Policywgma60ma91()
     param={
-        'zhangshu':0.02*2,
-        'jiange':0.3,
+        'zhangshu':0.03,
+        'jiange':0.1,#每格间距多少atr
         'zhiying':8,#止盈比例
         'huiche':20,#回撤比例
-        'zhisun':8,#逆势多少格
-        'sleep':5,
+        'zhisun':1,#逆势多少atr
+        'sleep':1,
     }
     robot.start(
         coinname='eth',

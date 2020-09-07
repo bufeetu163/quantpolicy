@@ -28,7 +28,7 @@ class Policywgma60ma91(Policy):
         rate_margin_min=str(min(self.dict_record['list_rate_margin']))
         times_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
         aver_shouyi=str(round(sum(self.dict_record['list_rate_shouyi_close'])/len(self.dict_record['list_rate_shouyi_close']),2))
-        m1=self.coinname+'|'+str(fund)+'|'+str(money)+'|'+str(fee_sum)+'|'+str(rate_nianhua)+'|'+str(huiche_max)+'|'+str(rate_shenglv)+'|'+str(rate_yingkui)
+        m1=self.coinname+'|'+str(fund)+'|'+str(round(money,2))+'|'+str(round(fee_sum,4))+'|'+str(rate_nianhua)+'|'+str(huiche_max)+'|'+str(rate_shenglv)+'|'+str(rate_yingkui)
         m2='|'+str(rate_chicang)+'|'+str(rate_margin_min)+'|'+str(times_shouyi)+'|'+str(aver_shouyi)
         m3=str(self.dict_param)
         self.txt_write('zongjie',m1+m2+m3)
@@ -66,9 +66,9 @@ class Policywgma60ma91(Policy):
             todo = '止盈空'
         elif lun_direction == 'duo' and lun_rate_shouyi_max > self.dict_param['zhiying'] and lun_rate_shouyi < lun_rate_shouyi_max * (1 - self.dict_param['huiche'] * 0.01):
             todo = '止盈多'
-        elif lun_direction == 'kong' and price-self.dict_acc['lun_price_low']>self.dict_param['zhisun']*jiange*atr:
+        elif lun_direction == 'kong' and price-self.dict_acc['lun_price_low']>self.dict_param['zhisun']*atr:
             todo = '止损空'
-        elif lun_direction == 'duo' and self.dict_acc['lun_price_high']-price>self.dict_param['zhisun']*jiange*atr:
+        elif lun_direction == 'duo' and self.dict_acc['lun_price_high']-price>self.dict_param['zhisun']*atr:
             todo = '止损多'
         elif lun_direction=='sleep' and self.dict_data['timechuo']>self.dict_acc['lun_timechuo_sleep'] and self.dict_data['direction']!='sleep':
             todo = '解冻'
@@ -116,7 +116,7 @@ class Policywgma60ma91(Policy):
         #回撤率
         rate_huiche = round((10000 - fund) / (10000) * 100, 2)
         self.dict_record['list_rate_huiche'].append(rate_huiche)
-        m1='==========方向'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+ '保证金率' + str(rate_margin)+ '持仓率' + str(rate_chicang)
+        m1='==========本轮方向'+str(self.dict_acc['lun_direction'])+'张数'+str(self.dict_acc['lun_zhangshu_sum'])+ '保证金率' + str(rate_margin)+ '持仓率' + str(rate_chicang)+'最高'+str(self.dict_acc['lun_price_high'])+'最低'+str(self.dict_acc['lun_price_low'])
         m2 = '==========权益' + str(self.dict_acc['quanyi']) + '资产' + str(fund) + '利润' + str(self.dict_acc['money']) + '手续费' + str(self.dict_record['fee_sum'])+'收益率' + str(rate_shouyi_fund) + '基准率' + str(rate_jizhun)
         m3 = '==========最低保证金率' + str(min(self.dict_record['list_rate_margin'])) + '最大持仓率' + str(max(self.dict_record['list_rate_chicang'])) + '最大回撤' + str(max(self.dict_record['list_rate_huiche']))
         self.log(m1)
@@ -194,7 +194,7 @@ class Policywgma60ma91(Policy):
         jiange_wg = round(atr * self.dict_param['jiange'],2)
         status = ''
         zhangshu_wg=0
-        geshu = 20
+        geshu = 40
         for i in range(geshu * 2 + 1):
             id = i + 1
             price_wg = price + (geshu - i) * jiange_wg
@@ -281,7 +281,7 @@ class Policywgma60ma91(Policy):
                     self.dict_acc['lun_rate_shouyi_max'] = self.dict_acc['lun_rate_shouyi']
                     self.log('恭喜,本轮收益率达到' + str(self.dict_acc['lun_rate_shouyi']))
                 #4记录数据
-                if timechuo>self.dict_record['timechuo_record']:
+                if timechuo>self.dict_record['timechuo_record'] and self.dict_acc['lun_direction']!='sleep':
                     self.dict_record['timechuo_record'] = timechuo + 3600 * 24
                     self.record()
                 #5止盈止损
@@ -351,11 +351,9 @@ class Policywgma60ma91(Policy):
     def start(self,coinname,date_start,date_end,param={}):
         self.init(coinname,param)
         # 遍历数据
-        # df_1m = pd.read_csv(os.path.abspath('.') + '\\klineok\\' + coinname + '1m1dok.csv', index_col=0).reset_index()
-        path=os.path.abspath('.') + '/klineok/' + coinname + '1m1dok.csv'
-        print(path)
+        # path=os.path.abspath('.') + '/klineok/' + coinname + '1m1dok.csv'
+        path=os.path.abspath(os.path.dirname(os.getcwd())) + '/klineok/' + coinname + '1m1dok.csv'
         df_1m = pd.read_csv(path, index_col=0).reset_index()
-
         for i in range(len(df_1m)):
             timechuo=int(df_1m.loc[i, 'timechuo'])
             close= float(df_1m.loc[i, 'close'])
