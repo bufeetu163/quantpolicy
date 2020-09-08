@@ -1,3 +1,4 @@
+# coding=UTF-8
 import time, datetime
 import os
 import requests
