@@ -353,6 +353,7 @@ class Policywgma60ma91(Policy):
         # 遍历数据
         # path=os.path.abspath('.') + '/klineok/' + coinname + '1m1dok.csv'
         path=os.path.abspath(os.path.dirname(os.getcwd())) + '/klineok/' + coinname + '1m1dok.csv'
+        path=os.path.abspath(os.path.dirname(os.getcwd())) + '/klineok/' + coinname + '1m1dok.csv'
         df_1m = pd.read_csv(path, index_col=0).reset_index()
         for i in range(len(df_1m)):
             timechuo=int(df_1m.loc[i, 'timechuo'])
