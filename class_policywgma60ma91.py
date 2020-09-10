@@ -76,7 +76,7 @@ class Policywgma60ma91(Policy):
             #快照网格
             if todo!='解冻':
                 self.dict_acc['lun_timechuo_sleep']=self.dict_data['timechuo']+86400*self.dict_param['sleep']
-            self.wg_tocsv(self.coinname + todo, timechuo, price, lun_rate_shouyi, self.list_wg)
+            # self.wg_tocsv(self.coinname + todo, timechuo, price, lun_rate_shouyi, self.list_wg)
             #清空网格
             self.list_wg.clear()
             #记录平仓收益率
@@ -380,11 +380,13 @@ class Policywgma60ma91(Policy):
             }
             if self.dict_data['timechuo']<self.dict_acc['lun_timechuo_sleep']:
                 self.dict_data['direction']='sleep'
-
             if timechuo > self.date_totimechuo(date_start) and timechuo< self.date_totimechuo(date_end):
                 self.run()
             elif timechuo > self.date_totimechuo(date_end):
                 break
+            if timechuo>self.date_totimechuo('2018-12-31 12:00') and self.dict_acc['money']<=0:
+                self.txt_write('zongjie', 'fail'+str(self.dict_param))
+                return
         self.zongjie(quanyi=self.dict_acc['quanyi'],
                      price=self.dict_data['close'],
                      money=self.dict_acc['money'],

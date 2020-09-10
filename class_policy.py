@@ -66,6 +66,7 @@ class Policy(Base):
             listx.append(i + 1)
         plt.rcParams['font.sans-serif'] = ['SimHei']
         plt.rcParams['axes.unicode_minus'] = False
+        plt.rcParams['font.serif'] = ['KaiTi']
         liney1 = plt.plot(listx, list1)
         plt.setp(liney1, color='r')
         if len(list2)>0:

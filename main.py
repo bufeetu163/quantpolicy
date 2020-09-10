@@ -70,16 +70,45 @@ def main():
         'zhiying':8,#止盈比例
         'huiche':20,#回撤比例
         'zhisun':1,#逆势多少atr
-        'sleep':1,
+        'sleep':1,#休眠天数
     }
+    time_start=time.time()
     robot.start(
         coinname='eth',
         date_start='2018-09-15 12:00',
         date_end='2019-12-15 12:00',
         param=param
     )
-
+    time_cost=time.time()-time_start
+    print('花费时间'+str(round(time_cost,2))+'秒')
+def main_all():
+    robot = Policywgma60ma91()
+    list_zhisun = [1, 3, 5]# 1北京3上海5香港
+    list_zhisun = [5]
+    list_zhangshu=[0.03,0.05,0.07,0.09]
+    list_jiange=[0.1,0.3,0.5,0.7]
+    list_zhiying=[8,11,5,2]
+    list_sleep=[1,3,5,7]
+    for zhangshu in list_zhangshu:
+        for jiange in list_jiange:
+            for zhiying in list_zhiying:
+                for zhisun in list_zhisun:
+                    for sleep in list_sleep:
+                        # 总数量 4*4*4*3*4=4*768  四台,每台768个,,,, 768/12=
+                        param = {
+                            'zhangshu': zhangshu,
+                            'jiange': jiange,  # 每格间距多少atr
+                            'zhiying': zhiying,  # 止盈比例
+                            'huiche': 20,  # 回撤比例
+                            'zhisun': zhisun,  # 逆势多少atr
+                            'sleep': sleep,  # 休眠天数
+                        }
+                        robot.start(
+                            coinname='eth',
+                            date_start='2018-09-15 12:00',
+                            date_end='2019-12-15 12:00',
+                            param=param
+                        )
 
 if __name__ == '__main__':
-    main()
-    # piliang()
+    main_all()
