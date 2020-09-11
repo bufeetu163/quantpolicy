@@ -13,7 +13,7 @@ from calss_kline import Kline
 import pdb
 from HuobiDMService import HuobiDM
 from class_policywgma60ma91 import Policywgma60ma91
-def piliang():
+def piliang_order():
     dm = HuobiDM('bb744223-32147a86-56597f7f-ez2xc4vb6n', '8bc9bf60-64d68dfc-2cc3f4f7-b08de')
     # dm.order_piliang(
     #     coinname='trx',
@@ -24,15 +24,15 @@ def piliang():
     #     direction='sell',
     #     offset='open',
     # )
-    # dm.order_piliang(
-    #     coinname='eos',
-    #     price_start=3.071,
-    #     jiange=0.002,
-    #     times=132,
-    #     volume=1,
-    #     direction='sell',
-    #     offset='open',
-    # )
+    dm.order_piliang(
+        coinname='eos',
+        price_start=2.830,
+        jiange=0.002,
+        times=500,
+        volume=1,
+        direction='sell',
+        offset='open',
+    )
     # dm.order_piliang(
     #     coinname='link',
     #     price_start=11.9,
@@ -42,24 +42,24 @@ def piliang():
     #     direction='sell',
     #     offset='open',
     # )
-    dm.order_piliang(
-        coinname='btc',
-        price_start=10450,
-        jiange=10,
-        times=30,
-        volume=1,
-        direction='sell',
-        offset='open',
-    )
-    dm.order_piliang(
-        coinname='btc',
-        price_start=10750,
-        jiange=10,
-        times=47,
-        volume=1,
-        direction='sell',
-        offset='close',
-    )
+    # dm.order_piliang(
+    #     coinname='btc',
+    #     price_start=10450,
+    #     jiange=10,
+    #     times=30,
+    #     volume=1,
+    #     direction='sell',
+    #     offset='open',
+    # )
+    # dm.order_piliang(
+    #     coinname='btc',
+    #     price_start=10750,
+    #     jiange=10,
+    #     times=47,
+    #     volume=1,
+    #     direction='sell',
+    #     offset='close',
+    # )
 
 
 def main():
@@ -82,6 +82,11 @@ def main():
     time_cost=time.time()-time_start
     print('花费时间'+str(round(time_cost,2))+'秒')
 def main_all():
+    '''
+    2020年9月11日 08:42:20
+    北京208上海151香港145
+
+    '''
     robot = Policywgma60ma91()
     list_zhisun = [1, 3, 5]# 1北京3上海5香港
     list_zhisun = [5]
@@ -111,4 +116,5 @@ def main_all():
                         )
 
 if __name__ == '__main__':
-    main_all()
+    piliang_order()
+    # main_all()

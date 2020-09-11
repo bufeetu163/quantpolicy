@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9df225d0-b3af-4d8b-892c-889d5789a0b5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_policywgma60ma91.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policywgma60ma91.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +100,10 @@
       <workItem from="1599466505054" duration="5120000" />
       <workItem from="1599542037712" duration="1231000" />
       <workItem from="1599557899579" duration="5058000" />
-      <workItem from="1599714308638" duration="5524000" />
+      <workItem from="1599714308638" duration="5735000" />
+      <workItem from="1599784828567" duration="373000" />
+      <workItem from="1599785412648" duration="996000" />
+      <workItem from="1599813822550" duration="645000" />
     </task>
     <servers />
   </component>
@@ -111,22 +111,22 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1595" height="241" key="GridCell.Tab.0.bottom" timestamp="1599721983957">
+    <state width="1876" height="241" key="GridCell.Tab.0.bottom" timestamp="1599791689797">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1595" height="241" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599721983957" />
-    <state width="1595" height="241" key="GridCell.Tab.0.center" timestamp="1599721983957">
+    <state width="1876" height="241" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599791689797" />
+    <state width="1876" height="241" key="GridCell.Tab.0.center" timestamp="1599791689797">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1595" height="241" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599721983957" />
-    <state width="1595" height="241" key="GridCell.Tab.0.left" timestamp="1599721983957">
+    <state width="1876" height="241" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599791689797" />
+    <state width="1876" height="241" key="GridCell.Tab.0.left" timestamp="1599791689797">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1595" height="241" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599721983957" />
-    <state width="1595" height="241" key="GridCell.Tab.0.right" timestamp="1599721983957">
+    <state width="1876" height="241" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599791689797" />
+    <state width="1876" height="241" key="GridCell.Tab.0.right" timestamp="1599791689797">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1595" height="241" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599721983957" />
+    <state width="1876" height="241" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599791689797" />
     <state width="1876" height="248" key="GridCell.Tab.1.bottom" timestamp="1599298185825">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -218,6 +218,6 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1599714342888" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1599785544567" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
