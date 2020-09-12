@@ -76,7 +76,7 @@ def main():
     robot.start(
         coinname='eth',
         date_start='2018-09-15 12:00',
-        date_end='2019-12-15 12:00',
+        date_end='2018-12-15 12:00',
         param=param
     )
     time_cost=time.time()-time_start
@@ -88,8 +88,8 @@ def main_all():
 
     '''
     robot = Policywgma60ma91()
-    list_zhisun = [1, 3, 5]# 1北京3上海5香港
-    list_zhisun = [5]
+    list_zhisun = [1, 2, 3]# 1北京2上海3香港
+    list_zhisun = [3]
     list_zhangshu=[0.03,0.05,0.07,0.09]
     list_jiange=[0.1,0.3,0.5,0.7]
     list_zhiying=[8,11,5,2]
@@ -116,5 +116,7 @@ def main_all():
                         )
 
 if __name__ == '__main__':
-    piliang_order()
-    # main_all()
+    # piliang_order()
+    main_all()
+    # main()
+

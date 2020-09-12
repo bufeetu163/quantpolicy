@@ -29,7 +29,6 @@ class Base():
         return res
     #基础文本操作
     def txt_write(self,filename,content):
-        return
         print(content)
         with open(filename+".txt", "a+") as f:
             f.write(content+'\n')

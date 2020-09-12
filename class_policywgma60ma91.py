@@ -39,6 +39,7 @@ class Policywgma60ma91(Policy):
         self.log(m1)
         self.log(m2)
     def log(self,content):
+        return
         self.txt_write(self.coinname,self.dict_data['date']+'----'+str(self.dict_data['close'])+'----'+content)
     def sell(self):
         quanyi = self.dict_acc['quanyi']

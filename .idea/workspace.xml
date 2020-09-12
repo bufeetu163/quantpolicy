@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9df225d0-b3af-4d8b-892c-889d5789a0b5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_policywgma60ma91.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policywgma60ma91.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,7 +106,8 @@
       <workItem from="1599714308638" duration="5735000" />
       <workItem from="1599784828567" duration="373000" />
       <workItem from="1599785412648" duration="996000" />
-      <workItem from="1599813822550" duration="645000" />
+      <workItem from="1599813822550" duration="1283000" />
+      <workItem from="1599879848584" duration="1443000" />
     </task>
     <servers />
   </component>
@@ -201,17 +205,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policywgma60ma91.py</url>
-          <line>262</line>
+          <line>263</line>
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policywgma60ma91.py</url>
-          <line>266</line>
+          <line>267</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policywgma60ma91.py</url>
-          <line>153</line>
+          <line>154</line>
           <option name="timeStamp" value="46" />
         </line-breakpoint>
       </breakpoints>
