@@ -27,7 +27,7 @@ class Policywgma60ma91(Policy):
         rate_chicang=str(max(self.dict_record['list_rate_chicang']))
         rate_margin_min=str(min(self.dict_record['list_rate_margin']))
         times_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
-        aver_shouyi=str(round(sum(self.dict_record['list_rate_shouyi_close'])/len(self.dict_record['list_rate_shouyi_close']),2))
+        aver_shouyi=str(round(sum(self.dict_record['list_rate_shouyi_close'])/min(len(self.dict_record['list_rate_shouyi_close']),1),2))
         m1=self.coinname+'|'+str(fund)+'|'+str(round(money,2))+'|'+str(round(fee_sum,4))+'|'+str(rate_nianhua)+'|'+str(huiche_max)+'|'+str(rate_shenglv)+'|'+str(rate_yingkui)
         m2='|'+str(rate_chicang)+'|'+str(rate_margin_min)+'|'+str(times_shouyi)+'|'+str(aver_shouyi)
         m3=str(self.dict_param)

@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9df225d0-b3af-4d8b-892c-889d5789a0b5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_policywgma60ma91.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policywgma60ma91.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +105,8 @@
       <workItem from="1599785412648" duration="996000" />
       <workItem from="1599813822550" duration="1283000" />
       <workItem from="1599879848584" duration="2051000" />
-      <workItem from="1600051443596" duration="1418000" />
+      <workItem from="1600051443596" duration="1514000" />
+      <workItem from="1600075697328" duration="485000" />
     </task>
     <servers />
   </component>
@@ -150,10 +150,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="463" y="144" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1597712556947" />
-    <state x="639" y="109" width="647" height="807" key="find.popup" timestamp="1599723207318">
+    <state x="639" y="109" width="647" height="807" key="find.popup" timestamp="1600075875798">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="639" y="109" width="647" height="807" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599723207318" />
+    <state x="639" y="109" width="647" height="807" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1600075875798" />
     <state x="569" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1599202849819">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
