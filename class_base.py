@@ -32,7 +32,6 @@ class Base():
         print(content)
         with open(filename+".txt", "a+") as f:
             f.write(content+'\n')
-            print(content)
     def txt_remove(self,filename):
         if os.path.exists(filename):
             os.remove(filename)

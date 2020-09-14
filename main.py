@@ -83,17 +83,25 @@ def main():
     print('花费时间'+str(round(time_cost,2))+'秒')
 def main_all():
     '''
-    2020年9月11日 08:42:20
-    北京208上海151香港145
-
+    第一次遍历 2020年9月11日 08:42:20
     '''
-    robot = Policywgma60ma91()
     list_zhisun = [1, 2, 3]# 1北京2上海3香港
     list_zhisun = [3]
     list_zhangshu=[0.03,0.05,0.07,0.09]
     list_jiange=[0.1,0.3,0.5,0.7]
     list_zhiying=[8,11,5,2]
     list_sleep=[1,3,5,7]
+    '''
+        第2次遍历 2020年9月11日 08:42:20
+    '''
+    list_zhisun = [1,0.5]
+    list_zhangshu = [0.03, 0.05, 0.07, 0.09]
+    list_jiange = [0.1,0.5]
+    list_zhiying = [8, 11,14] #北京8上海11香港14
+    list_zhiying = [14] #北京8上海11香港14
+    list_sleep = [3,7]
+
+    robot = Policywgma60ma91()
     for zhangshu in list_zhangshu:
         for jiange in list_jiange:
             for zhiying in list_zhiying:
