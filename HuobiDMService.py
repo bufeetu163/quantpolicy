@@ -34,7 +34,7 @@ class HuobiDM:
         self.__access_key = access_key
         self.__secret_key = secret_key
 
-    def order_piliang(self, coinname, price_start, jiange, times, volume, direction, offset,lever_rate=10):
+    def order_piliang(self, coinname, price_start, jiange, times, volume, direction, offset,contract_type='next_quarter',lever_rate=10):
         jingdu=self.get_jingdu(coinname)
         i = 1
         while i <= times:
@@ -56,7 +56,7 @@ class HuobiDM:
             print('执行,i=' + str(i) + '价格' + str(price))
             i = i + 1
             res = self.send_contract_order(symbol=coinname, price=price, volume=volume, direction=direction,
-                                           offset=offset,lever_rate=lever_rate)
+                                           offset=offset,lever_rate=lever_rate,contract_type=contract_type)
             print(res)
     # 获取合约信息
     # def get_contract_info(self, symbol='', contract_type='', contract_code=''):
@@ -219,9 +219,11 @@ class HuobiDM:
         else:
             jingdu=3
         return jingdu
-    def send_contract_order(self, symbol, price, volume, direction, offset,lever_rate):
+    def send_contract_order(self, symbol, price, volume, direction, offset,lever_rate,contract_type):
         params = {
-            'contract_type': "next_quarter",
+            # 'contract_type': "next_quarter",
+            # 'contract_type': "quarter",
+            'contract_type': contract_type,
             "direction": direction,
             "lever_rate": lever_rate,
             "offset": offset,

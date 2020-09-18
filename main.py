@@ -26,12 +26,13 @@ def piliang_order():
     # )
     dm.order_piliang(
         coinname='eos',
-        price_start=2.830,
-        jiange=0.002,
-        times=500,
+        price_start=2.82,
+        jiange=0.001,
+        times=405,
         volume=1,
         direction='sell',
-        offset='open',
+        offset='close',
+        contract_type='next_quarter'
     )
     # dm.order_piliang(
     #     coinname='link',
@@ -42,15 +43,16 @@ def piliang_order():
     #     direction='sell',
     #     offset='open',
     # )
-    # dm.order_piliang(
-    #     coinname='btc',
-    #     price_start=10450,
-    #     jiange=10,
-    #     times=30,
-    #     volume=1,
-    #     direction='sell',
-    #     offset='open',
-    # )
+    dm.order_piliang(
+        coinname='btc',
+        price_start=11223,
+        jiange=10,
+        times=100,
+        volume=1,
+        direction='sell',
+        offset='close',
+        contract_type='quarter'
+    )
     # dm.order_piliang(
     #     coinname='btc',
     #     price_start=10750,
@@ -62,7 +64,7 @@ def piliang_order():
     # )
 
 
-def main():
+def mainjunxian():
     robot=Policywgma60ma91()
     param={
         'zhangshu':0.03,
@@ -81,7 +83,7 @@ def main():
     )
     time_cost=time.time()-time_start
     print('花费时间'+str(round(time_cost,2))+'秒')
-def main_all():
+def main_alljunxian():
     '''
     第一次遍历 2020年9月11日 08:42:20
     '''
@@ -100,6 +102,7 @@ def main_all():
     list_zhiying = [8, 11,14] #北京8上海11香港14
     list_zhiying = [14] #北京8上海11香港14
     list_sleep = [3,7]
+    i=0
 
     robot = Policywgma60ma91()
     for zhangshu in list_zhangshu:
@@ -122,9 +125,11 @@ def main_all():
                             date_end='2019-12-15 12:00',
                             param=param
                         )
-
+                        i+=1
+                        print('遍历完成'+str(i))
+def main():
+    pass
 if __name__ == '__main__':
     # piliang_order()
-    main_all()
-    # main()
+    main()
 

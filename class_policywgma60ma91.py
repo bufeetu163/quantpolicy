@@ -16,6 +16,21 @@ from class_policy import Policy
 class Policywgma60ma91(Policy):
 
     def zongjie(self,quanyi,price,money,fee_sum,date_start,date_end,huiche_max):
+        #判断不符合条件的不总结
+        if len(self.dict_record['list_rate_shouyi_fund'])==0:
+            print('资金收益列表空,返回')
+            return
+        elif len(self.dict_record['list_rate_shouyi_close'])==0:
+            print('平仓收益率列表空,返回')
+            return
+        elif len(self.dict_record['list_rate_chicang'])==0:
+            print('持仓率列表空,返回')
+            return
+        elif len(self.dict_record['list_rate_chicang'])==0:
+            print('持仓率列表空,返回')
+            return
+
+
         # 资产 净利润 手续费  年化率 最大回撤 胜率 盈亏比
         # 持仓率 最低保证金率 连续盈利 连续亏损  结单次数 平均每次结单收益
         # 张数 间隔 止盈 止损
@@ -27,17 +42,19 @@ class Policywgma60ma91(Policy):
         rate_chicang=str(max(self.dict_record['list_rate_chicang']))
         rate_margin_min=str(min(self.dict_record['list_rate_margin']))
         times_shouyi=str(len(self.dict_record['list_rate_shouyi_close']))
-        aver_shouyi=str(round(sum(self.dict_record['list_rate_shouyi_close'])/min(len(self.dict_record['list_rate_shouyi_close']),1),2))
+        aver_shouyi=str(round(sum(self.dict_record['list_rate_shouyi_close'])/max(len(self.dict_record['list_rate_shouyi_close']),1),2))
         m1=self.coinname+'|'+str(fund)+'|'+str(round(money,2))+'|'+str(round(fee_sum,4))+'|'+str(rate_nianhua)+'|'+str(huiche_max)+'|'+str(rate_shenglv)+'|'+str(rate_yingkui)
         m2='|'+str(rate_chicang)+'|'+str(rate_margin_min)+'|'+str(times_shouyi)+'|'+str(aver_shouyi)
         m3=str(self.dict_param)
+        print(m1)
+        print(m2)
         self.txt_write('zongjie',m1+m2+m3)
         self.chart(self.coinname+'年化'+str(rate_nianhua)+'回撤'+str(huiche_max) + '胜率' + str(rate_shenglv) + '盈亏比' + str(rate_yingkui), self.dict_record['list_rate_jizhun'], self.dict_record['list_rate_shouyi_fund'])
-        m1 = self.coinname + '|fund' + str(fund) + '|money' + str(money) + '|fee_sum' + str(fee_sum) + '|nianhua' + str(
-            rate_nianhua) + '|最大回撤' + str(huiche_max) + '|胜率' + str(rate_shenglv) + '|盈亏比' + str(rate_yingkui)
-        m2 = '|最大持仓率' + str(rate_chicang) + '|最低保证金率' + str(rate_margin_min) + '|平仓次数' + str(times_shouyi) + '|预期单次收益' + str(aver_shouyi)
-        self.log(m1)
-        self.log(m2)
+        # m1 = self.coinname + '|fund' + str(fund) + '|money' + str(money) + '|fee_sum' + str(fee_sum) + '|nianhua' + str(
+        #     rate_nianhua) + '|最大回撤' + str(huiche_max) + '|胜率' + str(rate_shenglv) + '|盈亏比' + str(rate_yingkui)
+        # m2 = '|最大持仓率' + str(rate_chicang) + '|最低保证金率' + str(rate_margin_min) + '|平仓次数' + str(times_shouyi) + '|预期单次收益' + str(aver_shouyi)
+        # self.log(m1)
+        # self.log(m2)
     def log(self,content):
         return
         self.txt_write(self.coinname,self.dict_data['date']+'----'+str(self.dict_data['close'])+'----'+content)
@@ -385,7 +402,7 @@ class Policywgma60ma91(Policy):
                 self.run()
             elif timechuo > self.date_totimechuo(date_end):
                 break
-            if timechuo>self.date_totimechuo('2018-12-31 12:00') and self.dict_acc['money']<=0:
+            if timechuo>self.date_totimechuo('2018-12-31 12:00') and self.dict_acc['money']<=100:
                 self.txt_write('zongjie', 'fail'+str(self.dict_param))
                 return
         self.zongjie(quanyi=self.dict_acc['quanyi'],
