@@ -115,7 +115,8 @@
       <workItem from="1600160346728" duration="1506000" />
       <workItem from="1600224847718" duration="768000" />
       <workItem from="1600303012767" duration="977000" />
-      <workItem from="1600391653462" duration="25856000" />
+      <workItem from="1600391653462" duration="25953000" />
+      <workItem from="1600505018141" duration="2857000" />
     </task>
     <servers />
   </component>
@@ -123,38 +124,38 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1333" height="454" key="GridCell.Tab.0.bottom" timestamp="1600503925346">
+    <state width="1876" height="495" key="GridCell.Tab.0.bottom" timestamp="1600507755210">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925346" />
-    <state width="1333" height="454" key="GridCell.Tab.0.center" timestamp="1600503925346">
+    <state width="1876" height="495" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755210" />
+    <state width="1876" height="495" key="GridCell.Tab.0.center" timestamp="1600507755210">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925346" />
-    <state width="1333" height="454" key="GridCell.Tab.0.left" timestamp="1600503925346">
+    <state width="1876" height="495" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755210" />
+    <state width="1876" height="495" key="GridCell.Tab.0.left" timestamp="1600507755210">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925346" />
-    <state width="1333" height="454" key="GridCell.Tab.0.right" timestamp="1600503925346">
+    <state width="1876" height="495" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755210" />
+    <state width="1876" height="495" key="GridCell.Tab.0.right" timestamp="1600507755210">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925346" />
-    <state width="1333" height="454" key="GridCell.Tab.1.bottom" timestamp="1600503925294">
+    <state width="1876" height="495" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755210" />
+    <state width="1876" height="495" key="GridCell.Tab.1.bottom" timestamp="1600507755211">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925294" />
-    <state width="1333" height="454" key="GridCell.Tab.1.center" timestamp="1600503925294">
+    <state width="1876" height="495" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755211" />
+    <state width="1876" height="495" key="GridCell.Tab.1.center" timestamp="1600507755211">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925294" />
-    <state width="1333" height="454" key="GridCell.Tab.1.left" timestamp="1600503925294">
+    <state width="1876" height="495" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755211" />
+    <state width="1876" height="495" key="GridCell.Tab.1.left" timestamp="1600507755210">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925294" />
-    <state width="1333" height="454" key="GridCell.Tab.1.right" timestamp="1600503925294">
+    <state width="1876" height="495" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755210" />
+    <state width="1876" height="495" key="GridCell.Tab.1.right" timestamp="1600507755211">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1333" height="454" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600503925294" />
+    <state width="1876" height="495" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600507755211" />
     <state x="463" y="144" key="SettingsEditor" timestamp="1600407474002">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -228,33 +229,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/class_policyccg.py</url>
-          <line>101</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/class_policyccg.py</url>
-          <line>112</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/class_policyccg.py</url>
-          <line>106</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/class_policyccg.py</url>
-          <line>117</line>
-          <option name="timeStamp" value="58" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/class_policyccg.py</url>
-          <line>122</line>
-          <option name="timeStamp" value="59" />
+          <line>133</line>
+          <option name="timeStamp" value="64" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1600503925250" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1600507593211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

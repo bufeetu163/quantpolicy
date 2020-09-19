@@ -74,7 +74,10 @@ class Policyccg(Policy):
             if self.list_wg[i]['status'] == status and self.list_wg[i]['price']<price:
                 price=self.list_wg[i]['price']
                 res=self.list_wg[i]['id']
-        return res
+        if res==0:
+            return False
+        else:
+            return res
     def getid_price_max(self,status):
         res=0
         price=0
@@ -82,7 +85,94 @@ class Policyccg(Policy):
             if self.list_wg[i]['status'] == status and self.list_wg[i]['price']>price:
                 price=self.list_wg[i]['price']
                 res=self.list_wg[i]['id']
+        if res == 0:
+            return False
+        else:
+            return res
+    def get_geshu_status(self,status):
+        res=0
+        for i in range(len(self.list_wg)):
+            if self.list_wg[i]['status'] == status:
+                res+=1
         return res
+    def trade_duo(self,price,low,high,timechuo,zhangshu_dange):
+        id_duook_pricemin = self.getid_price_min('duo_ok')
+        id_duowait_pricemax = self.getid_price_max('duo_wait')
+        id_duocloseing_pricemax = self.getid_price_max('duo_closeing')
+        geshu_duo_wait=self.get_geshu_status('duo_wait')
+        geshu_duo_ok=self.get_geshu_status('duo_ok')
+        geshu_duo_closeing=self.get_geshu_status('duo_closeing')
+        # 没有委托单
+        if geshu_duo_wait== 0:
+            # 没有委托单 没有持仓单
+            if geshu_duo_ok==0:
+                self.log('开始委托多单,因为没有委托单,没有持仓单')
+                self.weituo(price - self.param['jiange'], zhangshu_dange, 'duo_wait')
+                return
+            #没有委托单 价格低于最低持仓价且休眠结束
+            elif price < self.get_ziduan_byid(id_duook_pricemin, 'price') and timechuo - self.get_ziduan_byid(id_duook_pricemin, 'timechuo') > self.param['sleep'] * 2:
+                self.log('开始委托多单,因为没有委托单,价格' + str(price) + '低于最低持仓价格' + str(self.get_ziduan_byid(id_duook_pricemin, 'price')) + '且不在休眠期')
+                self.weituo(price - self.param['jiange'], zhangshu_dange, 'duo_wait')
+                return
+        else:
+            #有委托单
+            # 撤销委托,高于最高委托价格2x价格
+            if price - self.get_ziduan_byid(id_duowait_pricemax, 'price') > 2 * self.param['jiange']:
+                self.log('撤销多单,因为价格' + str(price) + '高于最高委托价' + str(self.get_ziduan_byid(id_duowait_pricemax, 'price')) + '超出' + str(2 * self.param['jiange']))
+                self.trade(id_duowait_pricemax, 'duo_cancel')
+                return
+            # 开多成功,低于最高委托价格
+            if low < self.get_ziduan_byid(id_duowait_pricemax, 'price'):
+                self.log('开多成功,因为low' + str(low) + '低于委托价格' + str(self.get_ziduan_byid(id_duowait_pricemax, 'price')))
+                self.trade(id_duowait_pricemax, 'duo_ok')
+                return
+        #有待平单
+        if geshu_duo_closeing>0:
+            if high > self.get_ziduan_byid(id_duocloseing_pricemax, 'price_close'):
+                self.log('平多成功,因为high' + str(high) + '高于委托平仓价格' + str(self.get_ziduan_byid(id_duocloseing_pricemax, 'price_close')))
+                self.trade(id_duocloseing_pricemax, 'duo_close')
+                return
+
+
+
+
+
+    def trade_kong(self, price, low, high, timechuo, zhangshu_dange):
+        id_kongok_pricemin = self.getid_price_min('kong_ok')
+        id_kongwait_pricemax = self.getid_price_min('kong_wait')
+        id_kongcloseing_pricemax = self.getid_price_min('kong_closeing')
+        # 发起委托
+        if id_kongwait_pricemax == False:
+            # 没有持仓单
+            if id_kongok_pricemin == False:
+                self.log('开始委托多单,因为没有委托单,没有持仓单')
+                self.weituo(price - self.param['jiange'], zhangshu_dange, 'kong_wait')
+                return
+            elif price < self.get_ziduan_byid(id_kongok_pricemin, 'price') and timechuo - self.get_ziduan_byid(
+                    id_kongok_pricemin, 'timechuo') > self.param['sleep'] * 2:
+                self.log('开始委托多单,因为没有委托单,价格' + str(price) + '低于最低持仓价格' + str(
+                    self.get_ziduan_byid(id_kongok_pricemin, 'price')) + '且不在休眠期')
+                self.weituo(price - self.param['jiange'], zhangshu_dange, 'kong_wait')
+                return
+        # 撤销委托,高于最高委托价格2x价格
+        if id_kongwait_pricemax != False and price - self.get_ziduan_byid(id_kongwait_pricemax, 'price') > 2 * \
+                self.param[
+                    'jiange']:
+            self.log('撤销多单,因为价格' + str(price) + '高于最高委托价' + str(
+                self.get_ziduan_byid(id_kongwait_pricemax, 'price')) + '超出' + str(2 * self.param['jiange']))
+            self.trade(id_kongwait_pricemax, 'kong_cancel')
+            return
+        # 开多成功,低于最高委托价格
+        if low < self.get_ziduan_byid(id_kongwait_pricemax, 'price') and id_kongwait_pricemax != False:
+            self.log('开多成功,因为low' + str(low) + '低于委托价格' + str(self.get_ziduan_byid(id_kongwait_pricemax, 'price')))
+            self.trade(id_kongwait_pricemax, 'kong_ok')
+            return
+        # 平多成功,高于最高委托平仓价格
+        if high > self.get_ziduan_byid(id_kongcloseing_pricemax, 'price_close') and id_kongcloseing_pricemax != False:
+            self.log('平多成功,因为high' + str(high) + '高于委托平仓价格' + str(
+                self.get_ziduan_byid(id_kongcloseing_pricemax, 'price_close')))
+            self.trade(id_kongcloseing_pricemax, 'kong_close')
+            return
     def run(self):
         price=self.dict_data['close']
         low=self.dict_data['low']
@@ -90,37 +180,13 @@ class Policyccg(Policy):
         timechuo=self.dict_data['timechuo']
         zhangshu_chong=int(10000/self.mianzhi)
         zhangshu_dange=int(zhangshu_chong*self.param['zhangshu'])
-        #低于最低持仓价格 且超过它的开仓休眠期,委托开多,且委托单为0
-        id_price_min_duook=self.getid_price_min('duo_ok')
-        id_price_max_duowait=self.getid_price_min('duo_wait')
-        id_price_max_duocloseing=self.getid_price_min('duo_closeing')
-        if id_price_max_duowait==0:#没有委托单
-            #没有持仓单
-            if id_price_min_duook == 0:
-                self.log('开始委托多单,因为没有委托单,没有持仓单')
-                self.weituo(price-self.param['jiange'],zhangshu_dange,'duo_wait')
-                return
-            #价格低于最低持仓价 且满足时间
-            if price < self.get_ziduan_byid(id_price_min_duook, 'price') and timechuo - self.get_ziduan_byid(id_price_min_duook, 'timechuo') > self.param['sleep'] * 2:
-                self.log('开始委托多单,因为没有委托单,价格'+str(price)+'低于最低持仓价格'+str(self.get_ziduan_byid(id_price_min_duook, 'price'))+'且不在休眠期')
-                self.weituo(price - self.param['jiange'], zhangshu_dange, 'duo_wait')
-                return
-        else:
-            # 撤单,高于最高委托价格2x价格
-            if price-self.get_ziduan_byid(id_price_max_duowait,'price')>2*self.param['jiange']:
-                self.log('撤销多单,因为价格'+str(price)+'高于最高委托价'+str(self.get_ziduan_byid(id_price_max_duowait,'price'))+'超出'+str(2*self.param['jiange']))
-                self.trade(id_price_max_duowait,'duo_cancel')
-                return
-        # 开多成功,低于最高委托价格
-        if low< self.get_ziduan_byid(id_price_max_duowait, 'price') and id_price_max_duowait>0:
-            self.log('开多成功,因为low'+str(low)+'低于委托价格'+str(self.get_ziduan_byid(id_price_max_duowait, 'price')))
-            self.trade(id_price_max_duowait, 'duo_ok')
-            return
-        # 平多成功,高于最高委托平仓价格
-        if high>self.get_ziduan_byid(id_price_max_duocloseing,'price_close') and id_price_max_duocloseing>0:
-            self.log('平多成功,因为high'+str(high)+'高于委托平仓价格'+str(self.get_ziduan_byid(id_price_max_duocloseing,'price_close')))
-            self.trade(id_price_max_duocloseing, 'duo_close')
-            return
+        self.trade_duo(price, low, high, timechuo, zhangshu_dange)
+
+        id_kongok_pricemin = self.getid_price_min('kong_ok')
+        id_kongwait_pricemax = self.getid_price_min('kong_wait')
+        id_kongcloseing_pricemax = self.getid_price_min('kong_closeing')
+
+        #更新持仓的收益,返回本轮收益
 
 
     #初始化容器 遍历指定区间k线,调用run
