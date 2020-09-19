@@ -35,7 +35,12 @@ class Policyccg(Policy):
         self.txt_remove(self.coinname + '.txt')
         #初始化网格id=0
         self.wgid=0
-
+    def trade(self,id,status):
+        for i in range(len(self.list_wg)):
+            if self.list_wg[i]['id'] == id:
+                self.list_wg[i]['status']=status
+                return True
+        return False
     def weituo(self,price,zhangshu,status):
         dict_ls={
             'id':self.wgid+1,
@@ -94,14 +99,17 @@ class Policyccg(Policy):
         else:
             # 撤单,高于最高委托价格2x价格
             if price-self.get_ziduan_byid(id_price_max_duowait,'price')>2*self.param['jiange']:
+                self.trade(id_price_max_duowait,'duo_cancel')
                 self.log('撤销多单,因为价格高于最高委托价2x')
                 return
         # 开多成功,低于最高委托价格
         if low< self.get_ziduan_byid(id_price_max_duowait, 'price') > 2 * self.param['jiange']:
+            self.trade(id_price_max_duowait, 'duo_ok')
             self.log('开多成功,因为低于委托价格')
             return
         # 平多成功,高于最高委托平仓价格
         if high>self.get_ziduan_byid(id_price_max_duocloseing,'price'):
+            self.trade(id_price_max_duowait, 'duo_close')
             self.log('平多成功,因为高于委托平仓价格')
             return
 
