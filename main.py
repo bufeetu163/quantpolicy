@@ -13,6 +13,7 @@ from calss_kline import Kline
 import pdb
 from HuobiDMService import HuobiDM
 from class_policywgma60ma91 import Policywgma60ma91
+from class_policyccg import Policyccg
 def piliang_order():
     dm = HuobiDM('bb744223-32147a86-56597f7f-ez2xc4vb6n', '8bc9bf60-64d68dfc-2cc3f4f7-b08de')
     # dm.order_piliang(
@@ -128,6 +129,18 @@ def main_alljunxian():
                         i+=1
                         print('遍历完成'+str(i))
 def main():
+    param={
+        "zhangshu":0.01,#%
+        "jiange":0.72,#usdt
+        "sleep":30*60,#s
+    }
+    robot=Policyccg()
+    robot.start(
+        coinname='eth',
+        date_start='2018-09-15 12:00',
+        date_end='2018-12-15 12:00',
+        param=param
+    )
     pass
 if __name__ == '__main__':
     # piliang_order()

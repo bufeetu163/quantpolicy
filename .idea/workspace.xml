@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9df225d0-b3af-4d8b-892c-889d5789a0b5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/class_policyccg.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HuobiDMService.py" beforeDir="false" afterPath="$PROJECT_DIR$/HuobiDMService.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_policywgma60ma91.py" beforeDir="false" afterPath="$PROJECT_DIR$/class_policywgma60ma91.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -24,6 +22,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1gFZrmFLl9jV9wZ31RPyirggZXZ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -35,13 +36,13 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\www\quantpolicy" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\www\quantpolicy" />
     </key>
   </component>
@@ -114,7 +115,7 @@
       <workItem from="1600160346728" duration="1506000" />
       <workItem from="1600224847718" duration="768000" />
       <workItem from="1600303012767" duration="977000" />
-      <workItem from="1600391653462" duration="260000" />
+      <workItem from="1600391653462" duration="19524000" />
     </task>
     <servers />
   </component>
@@ -122,50 +123,50 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1593" height="241" key="GridCell.Tab.0.bottom" timestamp="1600304480402">
+    <state width="1876" height="271" key="GridCell.Tab.0.bottom" timestamp="1600475881601">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1593" height="241" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600304480402" />
-    <state width="1593" height="241" key="GridCell.Tab.0.center" timestamp="1600304480402">
+    <state width="1876" height="271" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881601" />
+    <state width="1876" height="271" key="GridCell.Tab.0.center" timestamp="1600475881601">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1593" height="241" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600304480402" />
-    <state width="1593" height="241" key="GridCell.Tab.0.left" timestamp="1600304480402">
+    <state width="1876" height="271" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881601" />
+    <state width="1876" height="271" key="GridCell.Tab.0.left" timestamp="1600475881601">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1593" height="241" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600304480402" />
-    <state width="1593" height="241" key="GridCell.Tab.0.right" timestamp="1600304480402">
+    <state width="1876" height="271" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881601" />
+    <state width="1876" height="271" key="GridCell.Tab.0.right" timestamp="1600475881601">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1593" height="241" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600304480402" />
-    <state width="1876" height="248" key="GridCell.Tab.1.bottom" timestamp="1599298185825">
+    <state width="1876" height="271" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881601" />
+    <state width="1876" height="271" key="GridCell.Tab.1.bottom" timestamp="1600475881602">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="248" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599298185825" />
-    <state width="1876" height="248" key="GridCell.Tab.1.center" timestamp="1599298185825">
+    <state width="1876" height="271" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881602" />
+    <state width="1876" height="271" key="GridCell.Tab.1.center" timestamp="1600475881601">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="248" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599298185825" />
-    <state width="1876" height="248" key="GridCell.Tab.1.left" timestamp="1599298185825">
+    <state width="1876" height="271" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881601" />
+    <state width="1876" height="271" key="GridCell.Tab.1.left" timestamp="1600475881601">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="248" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599298185825" />
-    <state width="1876" height="248" key="GridCell.Tab.1.right" timestamp="1599298185825">
+    <state width="1876" height="271" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881601" />
+    <state width="1876" height="271" key="GridCell.Tab.1.right" timestamp="1600475881602">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1876" height="248" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599298185825" />
-    <state x="463" y="144" key="SettingsEditor" timestamp="1597712556947">
+    <state width="1876" height="271" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600475881602" />
+    <state x="463" y="144" key="SettingsEditor" timestamp="1600407474002">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="463" y="144" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1597712556947" />
+    <state x="463" y="144" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1600407474002" />
     <state x="639" y="109" width="647" height="807" key="find.popup" timestamp="1600075875798">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="639" y="109" width="647" height="807" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1600075875798" />
-    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1599202849819">
+    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup" timestamp="1600408750043">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599202849819" />
+    <state x="569" y="255" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1600408750043" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -229,6 +230,6 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1600303390027" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/quantpolicy$main.coverage" NAME="main Coverage Results" MODIFIED="1600399534694" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
