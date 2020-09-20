@@ -14,7 +14,6 @@ import pdb
 from HuobiDMService import HuobiDM
 from class_policywgma60ma91 import Policywgma60ma91
 from class_policyccg import Policyccg
-#dev
 def piliang_order():
     dm = HuobiDM('bb744223-32147a86-56597f7f-ez2xc4vb6n', '8bc9bf60-64d68dfc-2cc3f4f7-b08de')
     # dm.order_piliang(
@@ -64,8 +63,6 @@ def piliang_order():
     #     direction='sell',
     #     offset='close',
     # )
-
-
 def mainjunxian():
     robot=Policywgma60ma91()
     param={
